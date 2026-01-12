@@ -32,6 +32,7 @@ const Navbar = () => {
                             {user.role === 'admin' && (
                                 <Link to="/admin" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Admin</Link>
                             )}
+                            <Link to="/orders" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Orders</Link>
                             <span className="text-gray-800 font-medium">Hello, {user.name}</span>
                             <button onClick={logout} className="text-gray-500 hover:text-red-500 transition-colors" title="Logout">
                                 <LogOut size={20} />
