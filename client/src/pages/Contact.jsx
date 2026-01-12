@@ -18,7 +18,6 @@ const Contact = () => {
                         <div>
                             <h3 className="font-bold text-gray-800">Email Us</h3>
                             <p>support@msinnovatics.com</p>
-                            <p>sales@msinnovatics.com</p>
                         </div>
                     </div>
 
@@ -28,19 +27,14 @@ const Contact = () => {
                         </div>
                         <div>
                             <h3 className="font-bold text-gray-800">Call Us</h3>
-                            <p>+91 98765 43210</p>
-                            <p>Monday - Friday, 9am - 6pm</p>
+                            <p>+91 7842204203</p>
+                            <p>Monday - Friday, 10am - 6pm</p>
                         </div>
                     </div>
 
                     <div className="flex items-start gap-4">
                         <div className="bg-purple-100 p-3 rounded-full text-purple-600">
                             <MapPin size={24} />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-gray-800">Visit Us</h3>
-                            <p>123 Tech Park, Innovation City</p>
-                            <p>Bangalore, Karnataka, India - 560100</p>
                         </div>
                     </div>
                 </div>
