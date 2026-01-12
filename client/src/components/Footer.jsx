@@ -32,8 +32,8 @@ const Footer = () => {
                     <h4 className="font-bold text-white mb-4">Contact</h4>
                     <ul className="space-y-2 text-sm">
                         <li>Email: support@msinnovatics.com</li>
-                        <li>Phone: +91 98765 43210</li>
-                        <li>Address: 123 Tech Park, Innovation City, India</li>
+                        <li>Phone: +91 7842204203</li>
+                        <li>Address: 14-218/5, Raghavanagar Colony, Meerpet, Hyderabad,India</li>
                     </ul>
                 </div>
             </div>
