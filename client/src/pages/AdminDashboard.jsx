@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Plus, Trash2, Edit, Package, ShoppingBag } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -22,10 +22,10 @@ const AdminDashboard = () => {
         setLoading(true);
         try {
             if (activeTab === 'products') {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`);
+                const res = await api.get('/products');
                 setProducts(res.data);
             } else {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/all`);
+                const res = await api.get('/orders/all');
                 setOrders(res.data);
             }
         } catch (error) {
@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     const handleDeleteProduct = async (id) => {
         if (!window.confirm('Are you sure?')) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products/${id}`);
+            await api.delete(`/products/${id}`);
             fetchData();
         } catch (error) {
             alert('Error deleting product');
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
     const handleAddProduct = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`, formData);
+            await api.post('/products', formData);
             setShowAddModal(false);
             setFormData({ title: '', description: '', price: '', image_url: '', category: '', stock: 10 });
             fetchData();

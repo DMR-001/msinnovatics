@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
@@ -27,7 +27,7 @@ const Checkout = () => {
             }
 
             // 1. Initiate Payment Request to Backend
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/initiate`, {
+            const res = await api.post('/payment/initiate', {
                 items: cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price })),
                 total_amount: total,
                 userId: user.id
