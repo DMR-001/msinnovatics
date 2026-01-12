@@ -38,13 +38,17 @@ const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 
 
-// Test DB Connection
-db.query('SELECT NOW()', (err, result) => {
-    if (err) {
-        return console.error('Error executing query', err.stack);
+// Test DB Connection (Safe for Vercel)
+const testDbConnection = async () => {
+    try {
+        const result = await db.query('SELECT NOW()');
+        console.log('Connected to Database at:', result.rows[0].now);
+    } catch (err) {
+        console.error('Error executing query', err.stack);
+        // Do NOT exit process here, let server start even if DB fails initially (Vercel cold start)
     }
-    console.log('Connected to Database at:', result.rows[0].now);
-});
+};
+testDbConnection();
 
 // Basic Route
 app.get('/', (req, res) => {
