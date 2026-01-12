@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import ProductDetails from './pages/ProductDetails';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentFailure from './pages/PaymentFailure';
 import AdminDashboard from './pages/AdminDashboard';
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/shipping-policy" element={<ShippingPolicy />} />
 
                 {/* <Route path="/products/:id" element={<ProductDetails />} /> */}
+                <Route path="/products/:id" element={<ProductDetails />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/orders" element={

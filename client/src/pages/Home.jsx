@@ -43,18 +43,20 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {products.map(product => (
                     <div key={product.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all border border-gray-100 flex flex-col">
-                        <div className="h-48 bg-gray-200 overflow-hidden relative">
+                        <Link to={`/products/${product.id}`} className="block h-48 bg-gray-200 overflow-hidden relative group">
                             {product.image_url ? (
-                                <img src={product.image_url} alt={product.title} className="w-full h-full object-cover transition-transform hover:scale-105" />
+                                <img src={product.image_url} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                             ) : (
                                 <div className="flex items-center justify-center h-full text-gray-400 bg-gray-100">No Image</div>
                             )}
                             <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-gray-700 shadow-sm">
                                 {product.category || 'Project'}
                             </div>
-                        </div>
+                        </Link>
                         <div className="p-6 flex-grow flex flex-col">
-                            <h3 className="text-xl font-bold mb-2 text-gray-900">{product.title}</h3>
+                            <Link to={`/products/${product.id}`}>
+                                <h3 className="text-xl font-bold mb-2 text-gray-900 hover:text-blue-600 transition-colors">{product.title}</h3>
+                            </Link>
                             <p className="text-gray-600 mb-4 flex-grow line-clamp-3">{product.description}</p>
                             <div className="flex justify-between items-center mt-4">
                                 <span className="text-2xl font-bold text-blue-600">₹{product.price.toLocaleString('en-IN')}</span>
