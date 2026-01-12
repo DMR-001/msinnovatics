@@ -58,7 +58,12 @@ router.post('/initiate', verifyToken, async (req, res) => {
             redirect_url: redirectUrl,
             cancel_url: redirectUrl,
             language: 'EN',
-            // Add other optional params (billing_name, etc.) if available in req.body
+            billing_name: req.body.billing_name || '',
+            billing_email: req.body.billing_email || '',
+            billing_tel: req.body.billing_tel || '',
+            billing_country: 'India',
+            delivery_name: req.body.billing_name || '',
+            delivery_country: 'India'
         };
 
         const body = qs.stringify(params);
