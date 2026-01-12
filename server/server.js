@@ -7,7 +7,26 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+// Middleware
+const allowedOrigins = [
+    'https://msinnovatics.vercel.app',
+    'https://msinnovatics.com',
+    'https://www.msinnovatics.com',
+    'http://localhost:5173'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
+
+app.enable('trust proxy'); // Important for Vercel/proxies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Required for CCAvenue form POST
 
