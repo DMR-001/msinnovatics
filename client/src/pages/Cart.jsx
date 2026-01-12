@@ -25,7 +25,7 @@ const Cart = () => {
             <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-2/3 space-y-6">
                     {cart.map(item => (
-                        <div key={item.id} className="bg-white p-6 rounded-xl shadow-md flex items-center gap-6 border border-gray-100">
+                        <div key={item.id} className="bg-white p-4 md:p-6 rounded-xl shadow-md flex flex-col sm:flex-row items-center gap-4 md:gap-6 border border-gray-100">
                             <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                                 {item.image_url ? (
                                     <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
@@ -56,7 +56,7 @@ const Cart = () => {
                     ))}
                 </div>
                 <div className="lg:w-1/3">
-                    <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 sticky top-24">
+                    <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-100 sticky top-24">
                         <h3 className="text-2xl font-bold mb-6 border-b pb-4">Order Summary</h3>
                         <div className="flex justify-between mb-4 text-gray-600">
                             <span>Subtotal</span>

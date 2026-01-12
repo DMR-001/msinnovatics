@@ -71,7 +71,7 @@ const Checkout = () => {
     return (
         <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Checkout</h1>
-            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-100">
                 <h2 className="text-xl font-bold mb-6 text-gray-700">Review Your Order</h2>
                 <div className="space-y-4 mb-8">
                     {cart.map(item => (

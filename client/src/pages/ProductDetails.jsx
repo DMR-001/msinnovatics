@@ -61,7 +61,7 @@ const ProductDetails = () => {
                     </div>
 
                     {/* Details Section - Right Panel */}
-                    <div className="md:w-1/2 p-10 flex flex-col">
+                    <div className="md:w-1/2 p-6 md:p-10 flex flex-col">
                         <h1 className="text-4xl font-extrabold text-gray-900 mb-4 leading-tight">{product.title}</h1>
 
                         <div className="flex items-center gap-4 mb-6">
