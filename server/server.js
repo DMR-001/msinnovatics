@@ -6,12 +6,6 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Env Check
-console.log('Environment Check:');
-console.log('DATABASE_URL defined:', !!process.env.DATABASE_URL);
-console.log('JWT_SECRET defined:', !!process.env.JWT_SECRET);
-console.log('MERCHANT_ID defined:', !!process.env.MERCHANT_ID);
-
 // Middleware
 // Middleware
 const allowedOrigins = [
@@ -31,7 +25,6 @@ app.use(cors({
     },
     credentials: true
 }));
-app.options('*', cors()); // Enable pre-flight request for all routes
 
 app.enable('trust proxy'); // Important for Vercel/proxies
 app.use(express.json());
@@ -44,17 +37,13 @@ const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 
 
-// Test DB Connection (Safe for Vercel)
-const testDbConnection = async () => {
-    try {
-        const result = await db.query('SELECT NOW()');
-        console.log('Connected to Database at:', result.rows[0].now);
-    } catch (err) {
-        console.error('Error executing query', err.stack);
-        // Do NOT exit process here, let server start even if DB fails initially (Vercel cold start)
+// Test DB Connection
+db.query('SELECT NOW()', (err, result) => {
+    if (err) {
+        return console.error('Error executing query', err.stack);
     }
-};
-testDbConnection();
+    console.log('Connected to Database at:', result.rows[0].now);
+});
 
 // Basic Route
 app.get('/', (req, res) => {
@@ -66,10 +55,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payment', paymentRoutes); // Must handle POST from CCAvenue
 
-if (require.main === module) {
-    app.listen(port, () => {
-        console.log(`Server running on port ${port}`);
-    });
-}
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
 
 module.exports = app;

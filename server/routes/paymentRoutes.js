@@ -9,13 +9,6 @@ router.post('/initiate', verifyToken, async (req, res) => {
     const { items, total_amount, userId } = req.body; // userId from verifiedToken if needed, or pass it? verifyToken adds req.userId
     const actualUserId = req.userId;
 
-    // Debug Logs for Env Vars
-    console.log('Initiating Payment...');
-    console.log('MERCHANT_ID Present:', !!process.env.MERCHANT_ID);
-    console.log('ACCESS_CODE Present:', !!process.env.ACCESS_CODE);
-    console.log('WORKING_KEY Present:', !!process.env.WORKING_KEY);
-    console.log('CCAVENUE_URL:', process.env.CCAVENUE_URL);
-
     try {
         // 1. Create Order as Pending
         const client = await db.pool.connect();
@@ -65,16 +58,8 @@ router.post('/initiate', verifyToken, async (req, res) => {
             redirect_url: redirectUrl,
             cancel_url: redirectUrl,
             language: 'EN',
-            billing_name: req.body.billing_name || '',
-            billing_email: req.body.billing_email || '',
-            billing_tel: req.body.billing_tel || '',
-            billing_country: 'India',
-            delivery_name: req.body.billing_name || '',
-            delivery_country: 'India'
             // Add other optional params (billing_name, etc.) if available in req.body
         };
-
-        console.log('Payment Params:', JSON.stringify(params)); // Log params to check values
 
         const body = qs.stringify(params);
         const encRequest = ccav.encrypt(body, workingKey);
