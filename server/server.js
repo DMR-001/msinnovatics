@@ -25,6 +25,7 @@ app.use(cors({
     },
     credentials: true
 }));
+app.options('*', cors()); // Enable pre-flight request for all routes
 
 app.enable('trust proxy'); // Important for Vercel/proxies
 app.use(express.json());
