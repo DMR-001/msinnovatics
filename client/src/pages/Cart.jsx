@@ -36,7 +36,7 @@ const Cart = () => {
                             <div className="flex-grow">
                                 <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
                                 <p className="text-gray-500">{item.category}</p>
-                                <div className="text-blue-600 font-bold mt-1">${item.price}</div>
+                                <div className="text-blue-600 font-bold mt-1">₹{item.price.toLocaleString('en-IN')}</div>
                             </div>
                             <div className="flex items-center gap-3">
                                 {/* Quantity controls if needed, though for projects usually 1 is enough. Let's keep it simple. */}
@@ -60,11 +60,11 @@ const Cart = () => {
                         <h3 className="text-2xl font-bold mb-6 border-b pb-4">Order Summary</h3>
                         <div className="flex justify-between mb-4 text-gray-600">
                             <span>Subtotal</span>
-                            <span>${total.toFixed(2)}</span>
+                            <span>₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                         <div className="flex justify-between mb-6 text-xl font-bold text-gray-900">
                             <span>Total</span>
-                            <span>${total.toFixed(2)}</span>
+                            <span>₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                         <button
                             onClick={() => navigate('/checkout')}

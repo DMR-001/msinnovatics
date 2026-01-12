@@ -100,7 +100,7 @@ const AdminDashboard = () => {
                                 {products.map(product => (
                                     <tr key={product.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
                                         <td className="p-4 font-medium">{product.title}</td>
-                                        <td className="p-4">${product.price}</td>
+                                        <td className="p-4">₹{product.price.toLocaleString('en-IN')}</td>
                                         <td className="p-4"><span className="px-2 py-1 bg-gray-100 rounded text-sm">{product.category}</span></td>
                                         <td className="p-4 flex gap-2">
                                             {/* Edit button placeholder - navigate to edit page or open modal */}
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
                                         <div className="font-medium">{order.user_name}</div>
                                         <div className="text-sm text-gray-500">{order.user_email}</div>
                                     </td>
-                                    <td className="p-4 font-bold text-green-600">${order.total_amount}</td>
+                                    <td className="p-4 font-bold text-green-600">₹{order.total_amount.toLocaleString('en-IN')}</td>
                                     <td className="p-4 text-gray-500">{new Date(order.created_at).toLocaleDateString()}</td>
                                     <td className="p-4"><span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold uppercase">{order.status}</span></td>
                                 </tr>

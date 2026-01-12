@@ -53,7 +53,7 @@ router.post('/initiate', verifyToken, async (req, res) => {
         const params = {
             merchant_id: process.env.MERCHANT_ID,
             order_id: orderId,
-            currency: 'USD', // Or INR
+            currency: 'INR',
             amount: total_amount,
             redirect_url: redirectUrl,
             cancel_url: redirectUrl,

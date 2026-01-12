@@ -80,13 +80,13 @@ const Checkout = () => {
                                 <div className="font-bold text-gray-900">{item.title}</div>
                                 <div className="text-sm text-gray-500">Qty: {item.quantity}</div>
                             </div>
-                            <div className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</div>
+                            <div className="font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                         </div>
                     ))}
                 </div>
                 <div className="flex justify-between items-center text-2xl font-bold border-t pt-6 mb-8 text-gray-900">
                     <span>Total</span>
-                    <span className="text-blue-600">${total.toFixed(2)}</span>
+                    <span className="text-blue-600">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
 
                 {error && <div className="bg-red-50 text-red-500 p-3 rounded mb-4">{error}</div>}

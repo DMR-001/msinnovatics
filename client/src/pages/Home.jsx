@@ -57,7 +57,7 @@ const Home = () => {
                             <h3 className="text-xl font-bold mb-2 text-gray-900">{product.title}</h3>
                             <p className="text-gray-600 mb-4 flex-grow line-clamp-3">{product.description}</p>
                             <div className="flex justify-between items-center mt-4">
-                                <span className="text-2xl font-bold text-blue-600">${product.price}</span>
+                                <span className="text-2xl font-bold text-blue-600">₹{product.price.toLocaleString('en-IN')}</span>
                                 <button
                                     onClick={() => addToCart(product)}
                                     className="bg-gray-900 text-white px-6 py-2 rounded-xl hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/20"
