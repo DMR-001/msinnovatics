@@ -6,6 +6,12 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Env Check
+console.log('Environment Check:');
+console.log('DATABASE_URL defined:', !!process.env.DATABASE_URL);
+console.log('JWT_SECRET defined:', !!process.env.JWT_SECRET);
+console.log('MERCHANT_ID defined:', !!process.env.MERCHANT_ID);
+
 // Middleware
 // Middleware
 const allowedOrigins = [
