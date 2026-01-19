@@ -12,7 +12,9 @@ const allowedOrigins = [
     'https://msinnovatics.vercel.app',
     'https://msinnovatics.com',
     'https://www.msinnovatics.com',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://test.ccavenue.com',
+    'https://secure.ccavenue.com'
 ];
 
 app.use(cors({
@@ -55,8 +57,10 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payment', paymentRoutes); // Must handle POST from CCAvenue
 
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}
 
 module.exports = app;

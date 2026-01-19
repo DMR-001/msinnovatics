@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/payment-callback",
+      "destination": "https://api.msinnovatics.com/api/payment/response"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

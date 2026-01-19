@@ -40,23 +40,20 @@ router.post('/initiate', verifyToken, async (req, res) => {
         const workingKey = process.env.WORKING_KEY;
         const accessCode = process.env.ACCESS_CODE;
 
-        const protocol = req.protocol;
-        const host = req.get('host');
-        // If in production (Vercel), host is usually correct. If behind proxy, trust proxy/x-forwarded-proto
-        const baseUrl = `${protocol}://${host}`;
-
-        // However, for Vercel, simpler to use logic:
-        const redirectUrl = process.env.API_URL
-            ? `${process.env.API_URL}/api/payment/response`
-            : `${protocol}://${host}/api/payment/response`;
+        // Use Frontend Proxy ( Single Domain Strategy )
+        // CCAvenue only sees msinnovatics.com
+        const frontendUrl = process.env.FRONTEND_URL || `${protocol}://${host}`;
+        const redirectUrl = `${frontendUrl}/payment-callback`;
+        // Ensure https
+        const secureRedirectUrl = redirectUrl.startsWith('http') ? redirectUrl : `https://${redirectUrl}`;
 
         const params = {
             merchant_id: process.env.MERCHANT_ID,
             order_id: orderId,
             currency: 'INR',
             amount: total_amount,
-            redirect_url: redirectUrl,
-            cancel_url: redirectUrl,
+            redirect_url: secureRedirectUrl,
+            cancel_url: secureRedirectUrl,
             language: 'EN',
             integration_type: 'iframe_normal',
             // Best Practice #5: Instant Gratification to handle drop-offs
