@@ -17,6 +17,12 @@ const allowedOrigins = [
     'https://secure.ccavenue.com'
 ];
 
+app.enable('trust proxy');
+app.use((req, res, next) => {
+    res.header('Vary', 'Origin');
+    next();
+});
+
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
