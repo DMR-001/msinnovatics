@@ -30,7 +30,13 @@ const Checkout = () => {
             const res = await api.post('/payment/initiate', {
                 items: cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price })),
                 total_amount: total,
-                userId: user.id
+                userId: user.id,
+                billing_info: {
+                    name: user.name || '',
+                    email: user.email || '',
+                    // Add other fields if captured in registration or profile
+                    // tel: user.phone || '9999999999', 
+                }
             });
 
             const { encRequest, accessCode, url } = res.data;

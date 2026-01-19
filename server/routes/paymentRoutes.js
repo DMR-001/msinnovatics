@@ -59,19 +59,15 @@ router.post('/initiate', verifyToken, async (req, res) => {
             cancel_url: secureRedirectUrl,
             language: 'EN',
             integration_type: 'iframe_normal',
-            // Best Practice #5: Instant Gratification to handle drop-offs
-            // 'Y' = Reverse transaction if status unknown (safer for real-time digital goods)
-            // 'N' = Mark successful (safer for brick & mortar). 
-            // We'll use 'Y' to prevent charging without delivery, but rely on webhook for sync.
-            // Actually, for digital downloads, we prefer users NOT to be charged if we don't know status.
-            // But usually 'N' is better if we have a robust webhook. Let's stick to standard behavior or omit if unsure.
-            // CCAvenue recommends 'Y' for "real time service rendering". 
-            // Let's add it.
-            // instant_gratification: 'Y', 
-            // actually, let's keep it simple and default unless user explicitly asks.
-            // The email suggests specific input fields. But here we send via params.
-            // Let's just focus on Validation for now as that is CRITICAL.
-            // Add other optional params (billing_name, etc.) if available in req.body
+            billing_name: req.body.billing_info?.name || '',
+            billing_email: req.body.billing_info?.email || '',
+            billing_country: 'India', // Default to India as per user context
+            billing_tel: '9999999999', // Placeholder if not collected, mandatory for some banks? Specs say optional but good to have
+            // Ensure address/city/state are non-empty if sent, or omit.
+            // CCAvenue doc says optional.
+
+            // Best Practice #5: Instant Gratification (as per user request "N" or omit if unsure, actually user pasted docs showing it handles drop-offs)
+            // We omit for now as default behavior is safer.
         };
 
         const body = qs.stringify(params);
@@ -101,6 +97,12 @@ router.post('/response', async (req, res) => {
         const status = data.order_status; // Success, Failure, Aborted
         const responseAmount = parseFloat(data.amount);
         const responseCurrency = data.currency;
+        const trackingId = data.tracking_id;
+        const bankRefNo = data.bank_ref_no;
+        const failureMessage = data.failure_message;
+        const paymentMode = data.payment_mode;
+        const cardName = data.card_name;
+        const statusMessage = data.status_message;
 
         // Security Check: Validation (Best Practice #1)
         const orderResult = await db.query('SELECT * FROM orders WHERE id = $1', [orderId]);
@@ -132,8 +134,30 @@ router.post('/response', async (req, res) => {
             dbStatus = 'failed';
         }
 
-        // Update DB
-        await db.query('UPDATE orders SET status = $1 WHERE id = $2', [dbStatus, orderId]);
+        // Update DB with full details
+        await db.query(
+            `UPDATE orders 
+             SET status = $1, 
+                 tracking_id = $2, 
+                 bank_ref_no = $3, 
+                 failure_message = $4, 
+                 payment_mode = $5, 
+                 card_name = $6, 
+                 status_message = $7,
+                 currency = $8
+             WHERE id = $9`,
+            [
+                dbStatus,
+                trackingId,
+                bankRefNo,
+                failureMessage,
+                paymentMode,
+                cardName,
+                statusMessage,
+                responseCurrency,
+                orderId
+            ]
+        );
 
         // Determine Frontend URL
         // In local dev: http://localhost:5173
