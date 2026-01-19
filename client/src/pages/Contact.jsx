@@ -36,6 +36,17 @@ const Contact = () => {
                         <div className="bg-purple-100 p-3 rounded-full text-purple-600">
                             <MapPin size={24} />
                         </div>
+                        <div>
+                            <h3 className="font-bold text-gray-800">Visit Us</h3>
+                            <p>14-218/5, Raghavanagar Colony,</p>
+                            <p>Meerpet, Hyderabad, Telangana</p>
+                            <p>India - 500097</p>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-gray-100">
+                        <h3 className="font-bold text-gray-800 mb-2">Legal Entity</h3>
+                        <p className="text-gray-600">Dorankula Mukteshwara Reddy</p>
                     </div>
                 </div>
 

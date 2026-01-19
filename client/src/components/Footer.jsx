@@ -33,7 +33,7 @@ const Footer = () => {
                     <ul className="space-y-2 text-sm">
                         <li>Email: support@msinnovatics.com</li>
                         <li>Phone: +91 7842204203</li>
-                        <li>Address: 14-218/5, Raghavanagar Colony, Meerpet, Hyderabad,India</li>
+                        <li>Address: 14-218/5, Raghavanagar Colony, Meerpet, Hyderabad, Telangana, India - 500097</li>
                     </ul>
                 </div>
             </div>

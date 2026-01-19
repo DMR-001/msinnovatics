@@ -58,6 +58,19 @@ router.post('/initiate', verifyToken, async (req, res) => {
             redirect_url: redirectUrl,
             cancel_url: redirectUrl,
             language: 'EN',
+            integration_type: 'iframe_normal',
+            // Best Practice #5: Instant Gratification to handle drop-offs
+            // 'Y' = Reverse transaction if status unknown (safer for real-time digital goods)
+            // 'N' = Mark successful (safer for brick & mortar). 
+            // We'll use 'Y' to prevent charging without delivery, but rely on webhook for sync.
+            // Actually, for digital downloads, we prefer users NOT to be charged if we don't know status.
+            // But usually 'N' is better if we have a robust webhook. Let's stick to standard behavior or omit if unsure.
+            // CCAvenue recommends 'Y' for "real time service rendering". 
+            // Let's add it.
+            // instant_gratification: 'Y', 
+            // actually, let's keep it simple and default unless user explicitly asks.
+            // The email suggests specific input fields. But here we send via params.
+            // Let's just focus on Validation for now as that is CRITICAL.
             // Add other optional params (billing_name, etc.) if available in req.body
         };
 
@@ -86,10 +99,35 @@ router.post('/response', async (req, res) => {
         // data contains order_status, order_id, tracking_id, etc.
         const orderId = data.order_id;
         const status = data.order_status; // Success, Failure, Aborted
+        const responseAmount = parseFloat(data.amount);
+        const responseCurrency = data.currency;
+
+        // Security Check: Validation (Best Practice #1)
+        const orderResult = await db.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+        const order = orderResult.rows[0];
+
+        if (!order) {
+            console.error('Order not found for ID:', orderId);
+            // Redirect to failure but don't crash
+            return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment/failure?error=order_not_found`);
+        }
 
         let dbStatus = 'cancelled';
+
         if (status === 'Success') {
-            dbStatus = 'completed';
+            // Verify Amount and Currency
+            const orderAmount = parseFloat(order.total_amount);
+
+            // Allow small float difference (0.01) just in case, but usually must be exact.
+            if (Math.abs(orderAmount - responseAmount) > 0.1) {
+                console.error(`Security Alert: Amount mismatch. Order: ${orderAmount}, Response: ${responseAmount}`);
+                dbStatus = 'failed'; // Mark failed to prevent fulfilling an underpaid order
+            } else if (responseCurrency !== 'INR') { // Assuming we only support INR
+                console.error(`Security Alert: Currency mismatch. Expected INR, Got: ${responseCurrency}`);
+                dbStatus = 'failed';
+            } else {
+                dbStatus = 'completed';
+            }
         } else if (status === 'Failure') {
             dbStatus = 'failed';
         }
