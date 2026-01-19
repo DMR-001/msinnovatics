@@ -42,7 +42,10 @@ router.post('/initiate', verifyToken, async (req, res) => {
 
         // Use Frontend Proxy ( Single Domain Strategy )
         // CCAvenue only sees msinnovatics.com
-        const frontendUrl = process.env.FRONTEND_URL || `${protocol}://${host}`;
+        // robustness: try env var, then request origin (frontend), then fallback to host
+        const origin = req.headers.origin;
+        const frontendUrl = process.env.FRONTEND_URL || origin || `${protocol}://${host}`;
+
         const redirectUrl = `${frontendUrl}/payment-callback`;
         // Ensure https
         const secureRedirectUrl = redirectUrl.startsWith('http') ? redirectUrl : `https://${redirectUrl}`;
