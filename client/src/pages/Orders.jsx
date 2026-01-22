@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
-import { Package, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Package, Clock, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [retryingOrderId, setRetryingOrderId] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -22,6 +25,83 @@ const Orders = () => {
 
         fetchOrders();
     }, []);
+
+    const handleRetryPayment = async (order) => {
+        setRetryingOrderId(order.id);
+        try {
+            // Get order items from the order
+            const orderItemsRes = await api.get(`/orders/${order.id}/items`);
+            const items = orderItemsRes.data;
+
+            // Initiate payment with existing order details
+            const res = await api.post('/payment/initiate', {
+                items: items.map(item => ({
+                    product_id: item.product_id,
+                    quantity: item.quantity,
+                    price: item.price_at_purchase
+                })),
+                total_amount: order.total_amount,
+                existing_order_id: order.id // Pass existing order ID to update instead of creating new
+            });
+
+            const { orderId, razorpayOrderId, amount, currency, keyId } = res.data;
+
+            // Configure Razorpay Options
+            const options = {
+                key: keyId,
+                amount: amount,
+                currency: currency,
+                name: 'MS Innovatics',
+                description: `Retry Payment - Order #${order.id}`,
+                order_id: razorpayOrderId,
+                handler: async function (response) {
+                    try {
+                        const verifyRes = await api.post('/payment/verify', {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            order_id: orderId
+                        });
+
+                        if (verifyRes.data.success) {
+                            navigate(`/payment/success?order_id=${orderId}&payment_id=${response.razorpay_payment_id}`);
+                        } else {
+                            navigate(`/payment/failure?order_id=${orderId}`);
+                        }
+                    } catch (err) {
+                        console.error('Verification error:', err);
+                        navigate(`/payment/failure?order_id=${orderId}`);
+                    }
+                },
+                prefill: {
+                    name: '',
+                    email: '',
+                    contact: ''
+                },
+                theme: {
+                    color: '#3B82F6'
+                },
+                modal: {
+                    ondismiss: function () {
+                        setRetryingOrderId(null);
+                    }
+                }
+            };
+
+            const razorpay = new window.Razorpay(options);
+            razorpay.open();
+
+            razorpay.on('payment.failed', function (response) {
+                setRetryingOrderId(null);
+                alert('Payment failed: ' + (response.error.description || 'Please try again'));
+            });
+
+        } catch (err) {
+            console.error('Retry payment error:', err);
+            alert('Failed to initiate payment. Please try again.');
+            setRetryingOrderId(null);
+        }
+    };
 
     if (loading) return <div className="text-center py-20">Loading orders...</div>;
     if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
@@ -59,17 +139,27 @@ const Orders = () => {
                                 </div>
                             </div>
 
-                            {/* Order Items could be expanded here if the API returned them. 
-                                Currently getUserOrders only returns the order wrapper. 
-                                If detailed items are needed, the backend query needs to join order_items.
-                                For now, we just show the summary.
-                            */}
+                            <div className="flex justify-between items-center">
+                                <div className="text-sm text-gray-500">
+                                    {order.status === 'completed' && <span className="text-green-600 flex items-center gap-1"><CheckCircle size={14} /> Paid via Razorpay</span>}
+                                    {order.status === 'pending' && <span className="text-orange-500 flex items-center gap-1"><Clock size={14} /> Payment Pending</span>}
+                                    {order.status === 'failed' && <span className="text-red-500 flex items-center gap-1"><XCircle size={14} /> Payment Failed</span>}
+                                    {order.status === 'cancelled' && <span className="text-red-500 flex items-center gap-1"><XCircle size={14} /> Cancelled</span>}
+                                </div>
 
-                            <div className="text-sm text-gray-500">
-                                {order.status === 'completed' && <span className="text-green-600 flex items-center gap-1"><CheckCircle size={14} /> Paid via CCAvenue</span>}
-                                {order.status === 'pending' && <span className="text-orange-500 flex items-center gap-1"><Clock size={14} /> Payment Pending</span>}
-                                {order.status === 'failed' && <span className="text-red-500 flex items-center gap-1"><XCircle size={14} /> Payment Failed</span>}
-                                {order.status === 'cancelled' && <span className="text-red-500 flex items-center gap-1"><XCircle size={14} /> Cancelled</span>}
+                                {(order.status === 'pending' || order.status === 'failed') && (
+                                    <button
+                                        onClick={() => handleRetryPayment(order)}
+                                        disabled={retryingOrderId === order.id}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all ${retryingOrderId === order.id
+                                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                                            }`}
+                                    >
+                                        <RefreshCw size={16} className={retryingOrderId === order.id ? 'animate-spin' : ''} />
+                                        {retryingOrderId === order.id ? 'Processing...' : 'Retry Payment'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}

@@ -60,3 +60,30 @@ exports.getAllOrders = async (req, res) => {
         res.status(500).json({ message: 'Error fetching all orders', error: error.message });
     }
 };
+
+exports.getOrderItems = async (req, res) => {
+    const { orderId } = req.params;
+    const userId = req.userId;
+
+    try {
+        // Verify the order belongs to the user
+        const orderCheck = await db.query(
+            'SELECT * FROM orders WHERE id = $1 AND user_id = $2',
+            [orderId, userId]
+        );
+
+        if (orderCheck.rows.length === 0) {
+            return res.status(404).json({ message: 'Order not found or unauthorized' });
+        }
+
+        // Get order items
+        const result = await db.query(
+            'SELECT * FROM order_items WHERE order_id = $1',
+            [orderId]
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching order items', error: error.message });
+    }
+};

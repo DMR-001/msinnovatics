@@ -26,34 +26,56 @@ function getRazorpayInstance() {
 }
 
 router.post('/initiate', verifyToken, async (req, res) => {
-    const { items, total_amount } = req.body;
+    const { items, total_amount, existing_order_id } = req.body;
     const actualUserId = req.userId;
 
     try {
-        // 1. Create Order in Database as Pending
-        const client = await db.pool.connect();
         let orderId;
-        try {
-            await client.query('BEGIN');
-            const orderResult = await client.query(
-                'INSERT INTO orders (user_id, total_amount, status) VALUES ($1, $2, $3) RETURNING id',
-                [actualUserId, total_amount, 'pending']
-            );
-            orderId = orderResult.rows[0].id;
 
-            // Insert Order Items
-            for (const item of items) {
-                await client.query(
-                    'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES ($1, $2, $3, $4)',
-                    [orderId, item.product_id, item.quantity, item.price]
-                );
+        // Check if this is a retry for an existing order
+        if (existing_order_id) {
+            // Verify the order belongs to the user and is pending/failed
+            const orderCheck = await db.query(
+                'SELECT * FROM orders WHERE id = $1 AND user_id = $2 AND status IN ($3, $4)',
+                [existing_order_id, actualUserId, 'pending', 'failed']
+            );
+
+            if (orderCheck.rows.length === 0) {
+                return res.status(404).json({ message: 'Order not found or cannot be retried' });
             }
-            await client.query('COMMIT');
-        } catch (e) {
-            await client.query('ROLLBACK');
-            throw e;
-        } finally {
-            client.release();
+
+            orderId = existing_order_id;
+
+            // Reset order status to pending
+            await db.query(
+                'UPDATE orders SET status = $1 WHERE id = $2',
+                ['pending', orderId]
+            );
+        } else {
+            // 1. Create New Order in Database as Pending
+            const client = await db.pool.connect();
+            try {
+                await client.query('BEGIN');
+                const orderResult = await client.query(
+                    'INSERT INTO orders (user_id, total_amount, status) VALUES ($1, $2, $3) RETURNING id',
+                    [actualUserId, total_amount, 'pending']
+                );
+                orderId = orderResult.rows[0].id;
+
+                // Insert Order Items
+                for (const item of items) {
+                    await client.query(
+                        'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES ($1, $2, $3, $4)',
+                        [orderId, item.product_id, item.quantity, item.price]
+                    );
+                }
+                await client.query('COMMIT');
+            } catch (e) {
+                await client.query('ROLLBACK');
+                throw e;
+            } finally {
+                client.release();
+            }
         }
 
         // 2. Create Razorpay Order
@@ -61,10 +83,11 @@ router.post('/initiate', verifyToken, async (req, res) => {
         const razorpayOrder = await razorpayInstance.orders.create({
             amount: Math.round(total_amount * 100), // Amount in paise (smallest currency unit)
             currency: 'INR',
-            receipt: `order_${orderId}`,
+            receipt: `order_${orderId}_${Date.now()}`,
             notes: {
                 order_id: orderId,
-                user_id: actualUserId
+                user_id: actualUserId,
+                retry: existing_order_id ? 'true' : 'false'
             }
         });
 
