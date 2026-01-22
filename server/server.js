@@ -12,24 +12,31 @@ const allowedOrigins = [
     'https://msinnovatics.vercel.app',
     'https://msinnovatics.com',
     'https://www.msinnovatics.com',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'http://localhost:3000'
 ];
 
 app.enable('trust proxy');
-app.use((req, res, next) => {
-    res.header('Vary', 'Origin');
-    next();
-});
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
+        // Allow requests with no origin (like mobile apps, Postman, or same-origin)
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        // Check if the origin is in the allowed list
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, origin); // Return the actual origin instead of true
         } else {
+            console.log('CORS blocked origin:', origin);
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Length', 'X-Request-Id']
 }));
 
 app.enable('trust proxy'); // Important for Vercel/proxies
