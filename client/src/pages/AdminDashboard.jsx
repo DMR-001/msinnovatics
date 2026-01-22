@@ -11,6 +11,7 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editProduct, setEditProduct] = useState(null);
+    const [productToDelete, setProductToDelete] = useState(null);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -38,13 +39,19 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleDeleteProduct = async (id) => {
-        if (!window.confirm('Are you sure?')) return;
+    const handleDeleteClick = (product) => {
+        setProductToDelete(product);
+    };
+
+    const confirmDelete = async () => {
+        if (!productToDelete) return;
         try {
-            await api.delete(`/products/${id}`);
+            await api.delete(`/products/${productToDelete.id}`);
             fetchData();
+            setProductToDelete(null);
         } catch (error) {
-            alert('Error deleting product');
+            console.error(error);
+            alert(error.response?.data?.message || 'Error deleting product. It might be part of an existing order.');
         }
     };
 
@@ -119,7 +126,7 @@ const AdminDashboard = () => {
                                         <td className="p-4"><span className="px-2 py-1 bg-gray-100 rounded text-sm">{product.category}</span></td>
                                         <td className="p-4 flex gap-2">
                                             <button onClick={() => setEditProduct(product)} className="p-2 text-blue-600 hover:bg-blue-50 rounded" title="Edit"><Edit size={18} /></button>
-                                            <button onClick={() => handleDeleteProduct(product.id)} className="p-2 text-red-600 hover:bg-red-50 rounded" title="Delete"><Trash2 size={18} /></button>
+                                            <button onClick={() => handleDeleteClick(product)} className="p-2 text-red-600 hover:bg-red-50 rounded" title="Delete"><Trash2 size={18} /></button>
                                         </td>
                                     </tr>
                                 ))}
@@ -193,6 +200,35 @@ const AdminDashboard = () => {
                     product={editProduct}
                     onSuccess={fetchData}
                 />
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {productToDelete && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden p-6 text-center">
+                        <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Trash2 size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Project?</h3>
+                        <p className="text-gray-600 mb-6">
+                            Are you sure you want to delete <strong>{productToDelete.title}</strong>? This action cannot be undone.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setProductToDelete(null)}
+                                className="flex-1 py-3 border border-gray-300 rounded-lg font-bold text-gray-700 hover:bg-gray-50 transition"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="flex-1 bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 transition shadow-lg"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
