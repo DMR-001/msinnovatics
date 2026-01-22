@@ -5,13 +5,14 @@ import { CreditCard, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-re
 
 const MyInstallments = () => {
     const [installments, setInstallments] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [payingInstallmentId, setPayingInstallmentId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchInstallments();
+        fetchData();
 
         // Load Razorpay script
         const script = document.createElement('script');
@@ -26,13 +27,17 @@ const MyInstallments = () => {
         };
     }, []);
 
-    const fetchInstallments = async () => {
+    const fetchData = async () => {
         try {
-            const res = await api.get('/installments/my-installments');
-            setInstallments(res.data);
+            const [installmentsRes, requestsRes] = await Promise.all([
+                api.get('/installments/my-installments'),
+                api.get('/installments/my-requests')
+            ]);
+            setInstallments(installmentsRes.data);
+            setRequests(requestsRes.data);
         } catch (err) {
-            console.error('Error fetching installments:', err);
-            setError('Failed to load installments');
+            console.error('Error fetching data:', err);
+            setError('Failed to load installment data');
         } finally {
             setLoading(false);
         }
@@ -70,7 +75,7 @@ const MyInstallments = () => {
 
                         if (verifyRes.data.success) {
                             alert('Payment successful!');
-                            fetchInstallments(); // Refresh list
+                            fetchData(); // Refresh list
 
                             if (verifyRes.data.allPaid) {
                                 alert('All installments paid! Your order is now complete.');
@@ -119,7 +124,9 @@ const MyInstallments = () => {
         const badges = {
             pending: { bg: 'bg-orange-100', text: 'text-orange-800', icon: Clock, label: 'Pending' },
             paid: { bg: 'bg-green-100', text: 'text-green-800', icon: CheckCircle, label: 'Paid' },
-            overdue: { bg: 'bg-red-100', text: 'text-red-800', icon: AlertCircle, label: 'Overdue' }
+            overdue: { bg: 'bg-red-100', text: 'text-red-800', icon: AlertCircle, label: 'Overdue' },
+            rejected: { bg: 'bg-red-100', text: 'text-red-800', icon: AlertCircle, label: 'Rejected' },
+            approved: { bg: 'bg-blue-100', text: 'text-blue-800', icon: CheckCircle, label: 'Approved' }
         };
 
         const badge = badges[status] || badges.pending;
@@ -152,13 +159,53 @@ const MyInstallments = () => {
                 <CreditCard className="text-blue-600" /> My Installments
             </h1>
 
+            {/* Pending Requests Section */}
+            {requests.length > 0 && (
+                <div className="mb-10">
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">Installment Requests</h2>
+                    <div className="space-y-4">
+                        {requests.map(request => (
+                            <div key={request.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                                <div className="flex flex-col md:flex-row justify-between gap-4">
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <h3 className="font-bold text-lg text-gray-800">Order #{request.order_number}</h3>
+                                            {getStatusBadge(request.status)}
+                                        </div>
+                                        <p className="text-gray-600">
+                                            Requesting to pay <span className="font-bold text-gray-900">₹{parseFloat(request.total_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span> in {request.requested_installments} installments
+                                        </p>
+                                        <p className="text-sm text-gray-400 mt-2">
+                                            Requested on {new Date(request.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                        </p>
+                                        {request.admin_notes && (
+                                            <div className="mt-3 bg-red-50 p-3 rounded-lg border border-red-100 text-sm text-red-700">
+                                                <span className="font-semibold">Admin Note:</span> {request.admin_notes}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center">
+                                        {request.status === 'pending' && (
+                                            <div className="text-sm text-orange-600 bg-orange-50 px-4 py-2 rounded-lg border border-orange-100">
+                                                Waiting for admin approval. Check back later.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {installments.length === 0 ? (
                 <div className="bg-white p-8 rounded-2xl shadow-sm text-center border border-gray-100">
-                    <p className="text-gray-500 text-lg mb-4">You don't have any installments yet.</p>
-                    <p className="text-gray-400 text-sm">Request installment payment for your orders to see them here.</p>
+                    <p className="text-gray-500 text-lg mb-4">You don't have any active installments.</p>
+                    <p className="text-gray-400 text-sm">Approved installment plans will appear here.</p>
                 </div>
             ) : (
                 <div className="space-y-8">
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">Active Installment Plans</h2>
                     {Object.entries(groupedInstallments).map(([orderId, orderInstallments]) => {
                         const totalInstallments = orderInstallments.length;
                         const paidInstallments = orderInstallments.filter(i => i.status === 'paid').length;
@@ -171,7 +218,7 @@ const MyInstallments = () => {
                                         <div>
                                             <h2 className="text-xl font-bold text-gray-800">Order #{orderId}</h2>
                                             <p className="text-gray-600 mt-1">
-                                                Total: ₹{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                                Total Plan: ₹{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                             </p>
                                         </div>
                                         <div className="text-right">
@@ -223,8 +270,8 @@ const MyInstallments = () => {
                                                                 onClick={() => handlePayInstallment(installment)}
                                                                 disabled={payingInstallmentId === installment.id}
                                                                 className={`px-6 py-2 rounded-lg font-semibold transition-all ${payingInstallmentId === installment.id
-                                                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                                                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                                                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
                                                                     }`}
                                                             >
                                                                 {payingInstallmentId === installment.id ? 'Processing...' : 'Pay Now'}
