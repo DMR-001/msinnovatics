@@ -100,6 +100,12 @@ router.post('/initiate', verifyToken, async (req, res) => {
                 [actualUserId, orderId, total_amount, 2, installment_reason || 'Checkout request', 'pending']
             );
 
+            // Mark order as installment type
+            await client.query(
+                "UPDATE orders SET payment_mode = 'installment' WHERE id = $1",
+                [orderId]
+            );
+
             await client.query('COMMIT');
 
             return res.json({

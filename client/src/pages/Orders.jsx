@@ -169,7 +169,7 @@ const Orders = () => {
                                     {order.status === 'cancelled' && <span className="text-red-500 flex items-center gap-1"><XCircle size={14} /> Cancelled</span>}
                                 </div>
 
-                                {(order.status === 'pending' || order.status === 'failed') && (
+                                {(order.status === 'pending' || order.status === 'failed') && order.payment_mode !== 'installment' && (
                                     <button
                                         onClick={() => handleRetryPayment(order)}
                                         disabled={retryingOrderId === order.id}
@@ -180,6 +180,16 @@ const Orders = () => {
                                     >
                                         <RefreshCw size={16} className={retryingOrderId === order.id ? 'animate-spin' : ''} />
                                         {retryingOrderId === order.id ? 'Processing...' : 'Retry Payment'}
+                                    </button>
+                                )}
+
+                                {order.payment_mode === 'installment' && (
+                                    <button
+                                        onClick={() => navigate('/installments')}
+                                        className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg font-semibold text-sm hover:bg-purple-200 transition-all"
+                                    >
+                                        <Clock size={16} />
+                                        View Installments
                                     </button>
                                 )}
                             </div>
