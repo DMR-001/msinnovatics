@@ -21,6 +21,10 @@ const runMigration = async () => {
                 ADD COLUMN IF NOT EXISTS card_name VARCHAR(50),
                 ADD COLUMN IF NOT EXISTS status_message TEXT,
                 ADD COLUMN IF NOT EXISTS currency VARCHAR(10);
+                
+                ALTER TABLE products
+                ADD COLUMN IF NOT EXISTS specifications JSONB DEFAULT '{}',
+                ADD COLUMN IF NOT EXISTS features JSONB DEFAULT '[]';
             `);
             console.log('Database migration completed: Added tracking columns to orders.');
         } finally {

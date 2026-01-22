@@ -23,11 +23,11 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
-    const { title, description, price, image_url, category, stock } = req.body;
+    const { title, description, price, image_url, category, stock, specifications, features } = req.body;
     try {
         const result = await db.query(
-            'INSERT INTO products (title, description, price, image_url, category, stock) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [title, description, price, image_url, category, stock]
+            'INSERT INTO products (title, description, price, image_url, category, stock, specifications, features) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+            [title, description, price, image_url, category, stock, specifications || {}, features || []]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -37,11 +37,11 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     const { id } = req.params;
-    const { title, description, price, image_url, category, stock } = req.body;
+    const { title, description, price, image_url, category, stock, specifications, features } = req.body;
     try {
         const result = await db.query(
-            'UPDATE products SET title = $1, description = $2, price = $3, image_url = $4, category = $5, stock = $6 WHERE id = $7 RETURNING *',
-            [title, description, price, image_url, category, stock, id]
+            'UPDATE products SET title = $1, description = $2, price = $3, image_url = $4, category = $5, stock = $6, specifications = $7, features = $8 WHERE id = $9 RETURNING *',
+            [title, description, price, image_url, category, stock, specifications || {}, features || [], id]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Product not found' });
