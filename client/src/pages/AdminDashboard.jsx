@@ -201,11 +201,8 @@ const AdminDashboard = () => {
 const EditModal = ({ isOpen, onClose, product, onSuccess }) => {
     const [formData, setFormData] = useState({
         title: '', description: '', price: '', image_url: '', category: '', stock: 0,
-        specifications: {}, features: []
+        specifications_text: ''
     });
-    const [newFeature, setNewFeature] = useState('');
-    const [newSpecKey, setNewSpecKey] = useState('');
-    const [newSpecValue, setNewSpecValue] = useState('');
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -217,8 +214,7 @@ const EditModal = ({ isOpen, onClose, product, onSuccess }) => {
                 image_url: product.image_url || '',
                 category: product.category || '',
                 stock: product.stock || 0,
-                specifications: product.specifications || {},
-                features: product.features || []
+                specifications_text: product.specifications_text || ''
             });
         }
     }, [product]);
@@ -234,35 +230,6 @@ const EditModal = ({ isOpen, onClose, product, onSuccess }) => {
             setUploading(false);
         };
         reader.readAsDataURL(file);
-    };
-
-    const addFeature = () => {
-        if (!newFeature.trim()) return;
-        setFormData(prev => ({ ...prev, features: [...(prev.features || []), newFeature] }));
-        setNewFeature('');
-    };
-
-    const removeFeature = (index) => {
-        setFormData(prev => ({
-            ...prev,
-            features: prev.features.filter((_, i) => i !== index)
-        }));
-    };
-
-    const addSpec = () => {
-        if (!newSpecKey.trim() || !newSpecValue.trim()) return;
-        setFormData(prev => ({
-            ...prev,
-            specifications: { ...prev.specifications, [newSpecKey]: newSpecValue }
-        }));
-        setNewSpecKey('');
-        setNewSpecValue('');
-    };
-
-    const removeSpec = (key) => {
-        const newSpecs = { ...formData.specifications };
-        delete newSpecs[key];
-        setFormData(prev => ({ ...prev, specifications: newSpecs }));
     };
 
     const handleSubmit = async (e) => {
@@ -347,66 +314,20 @@ const EditModal = ({ isOpen, onClose, product, onSuccess }) => {
                         <textarea name="description" value={formData.description} required className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none h-24" onChange={e => setFormData({ ...formData, description: e.target.value })} />
                     </div>
 
-                    {/* Features Editor */}
-                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                        <label className="block text-sm font-bold text-gray-800 mb-2">Features</label>
-                        <div className="flex gap-2 mb-3">
-                            <input
-                                value={newFeature}
-                                onChange={e => setNewFeature(e.target.value)}
-                                placeholder="Add a feature (e.g. 'Fast Performance')"
-                                className="flex-1 p-2 border rounded-lg text-sm"
-                                onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                            />
-                            <button type="button" onClick={addFeature} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700">Add</button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {(formData.features || []).map((feat, index) => (
-                                <span key={index} className="bg-white border px-3 py-1 rounded-full text-sm flex items-center gap-2 text-gray-700 shadow-sm">
-                                    {feat}
-                                    <button type="button" onClick={() => removeFeature(index)} className="text-red-500 hover:text-red-700">×</button>
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Specifications Editor */}
-                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                        <label className="block text-sm font-bold text-gray-800 mb-2">Specifications</label>
-                        <div className="flex gap-2 mb-3">
-                            <input
-                                value={newSpecKey}
-                                onChange={e => setNewSpecKey(e.target.value)}
-                                placeholder="Key (e.g. 'Color')"
-                                className="flex-1 p-2 border rounded-lg text-sm"
-                            />
-                            <input
-                                value={newSpecValue}
-                                onChange={e => setNewSpecValue(e.target.value)}
-                                placeholder="Value (e.g. 'Red')"
-                                className="flex-1 p-2 border rounded-lg text-sm"
-                                onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addSpec())}
-                            />
-                            <button type="button" onClick={addSpec} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700">Add</button>
-                        </div>
-                        <div className="space-y-2">
-                            {Object.entries(formData.specifications || {}).map(([key, value]) => (
-                                <div key={key} className="flex justify-between items-center bg-white border p-2 rounded-lg text-sm shadow-sm">
-                                    <div className="flex gap-2">
-                                        <span className="font-bold text-gray-700">{key}:</span>
-                                        <span className="text-gray-600">{value}</span>
-                                    </div>
-                                    <button type="button" onClick={() => removeSpec(key)} className="text-red-500 hover:text-red-700 p-1">
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Specifications & Features</label>
+                        <textarea
+                            name="specifications_text"
+                            value={formData.specifications_text}
+                            placeholder="Enter detailed specifications and features here..."
+                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none h-48 font-mono text-sm"
+                            onChange={e => setFormData({ ...formData, specifications_text: e.target.value })}
+                        />
                     </div>
 
                     <div className="flex gap-3 pt-4 border-t">
                         <button type="button" onClick={onClose} className="flex-1 py-3 border border-gray-300 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">Cancel</button>
-                        <button type="button" type="submit" className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg">Save Changes</button>
+                        <button type="submit" className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg">Save Changes</button>
                     </div>
                 </form>
             </div>

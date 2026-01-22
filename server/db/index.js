@@ -24,7 +24,8 @@ const runMigration = async () => {
                 
                 ALTER TABLE products
                 ADD COLUMN IF NOT EXISTS specifications JSONB DEFAULT '{}',
-                ADD COLUMN IF NOT EXISTS features JSONB DEFAULT '[]';
+                ADD COLUMN IF NOT EXISTS features JSONB DEFAULT '[]',
+                ADD COLUMN IF NOT EXISTS specifications_text TEXT;
             `);
             console.log('Database migration completed: Added tracking columns to orders.');
         } finally {
