@@ -9,8 +9,13 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         const storedCart = localStorage.getItem('cart');
-        if (storedCart) {
-            setCart(JSON.parse(storedCart));
+        if (storedCart && storedCart !== 'undefined') {
+            try {
+                setCart(JSON.parse(storedCart));
+            } catch (e) {
+                console.error("Invalid cart data", e);
+                localStorage.removeItem('cart');
+            }
         }
     }, []);
 
