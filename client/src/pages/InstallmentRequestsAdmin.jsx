@@ -179,6 +179,7 @@ const InstallmentRequestsAdmin = () => {
 const ApprovalModal = ({ request, onClose, onSuccess }) => {
     const [installments, setInstallments] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     useEffect(() => {
         // Initialize with equal installments
@@ -207,15 +208,30 @@ const ApprovalModal = ({ request, onClose, onSuccess }) => {
             await api.post(`/installments/approve/${request.id}`, {
                 installments: installments
             });
-            alert('Request approved successfully!');
-            onSuccess();
+            setShowSuccess(true);
+            setTimeout(() => {
+                onSuccess();
+            }, 2000);
         } catch (err) {
             console.error('Error approving request:', err);
             alert(err.response?.data?.message || 'Failed to approve request');
-        } finally {
             setLoading(false);
         }
     };
+
+    if (showSuccess) {
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center animate-in zoom-in-95 duration-200">
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <CheckCircle size={32} strokeWidth={3} />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">Approved!</h3>
+                    <p className="text-gray-600 mb-6">Installment plan has been created successfully.</p>
+                </div>
+            </div>
+        );
+    }
 
     const updateInstallment = (index, field, value) => {
         const updated = [...installments];
@@ -300,8 +316,8 @@ const ApprovalModal = ({ request, onClose, onSuccess }) => {
                             type="submit"
                             disabled={loading || !isValid}
                             className={`flex-1 px-6 py-3 rounded-xl font-semibold text-white ${loading || !isValid
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-gradient-to-r from-green-600 to-blue-600 hover:shadow-lg'
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-gradient-to-r from-green-600 to-blue-600 hover:shadow-lg'
                                 }`}
                         >
                             {loading ? 'Approving...' : 'Approve Request'}

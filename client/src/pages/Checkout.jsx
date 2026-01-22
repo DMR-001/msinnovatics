@@ -11,6 +11,8 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [paymentMode, setPaymentMode] = useState('full'); // 'full' or 'installment'
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     // Load Razorpay script
     useEffect(() => {
@@ -48,9 +50,10 @@ const Checkout = () => {
 
             // Handle Installment Request Success
             if (res.data.isInstallmentRequest) {
-                alert(res.data.message);
                 clearCart();
-                navigate('/orders'); // Redirect to orders or installments page
+                setSuccessMessage(res.data.message);
+                setShowSuccessModal(true);
+                setLoading(false);
                 return;
             }
 
@@ -190,6 +193,30 @@ const Checkout = () => {
                         : 'Safe and Secure Payment via Razorpay'}
                 </p>
             </div>
+
+            {/* Success Modal */}
+            {showSuccessModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center transform scale-100 animate-in zoom-in-95 duration-200">
+                        <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">Request Submitted!</h3>
+                        <p className="text-gray-600 mb-6">{successMessage}</p>
+                        <button
+                            onClick={() => {
+                                setShowSuccessModal(false);
+                                navigate('/orders');
+                            }}
+                            className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30"
+                        >
+                            View Orders
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

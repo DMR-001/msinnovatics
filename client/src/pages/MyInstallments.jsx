@@ -4,12 +4,8 @@ import api from '../api';
 import { CreditCard, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 
 const MyInstallments = () => {
-    const [installments, setInstallments] = useState([]);
-    const [requests, setRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [payingInstallmentId, setPayingInstallmentId] = useState(null);
-    const navigate = useNavigate();
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
         fetchData();
@@ -74,12 +70,15 @@ const MyInstallments = () => {
                         });
 
                         if (verifyRes.data.success) {
-                            alert('Payment successful!');
                             fetchData(); // Refresh list
 
                             if (verifyRes.data.allPaid) {
-                                alert('All installments paid! Your order is now complete.');
+                                setSuccessMessage('All installments paid! Your order is now complete.');
+                            } else {
+                                setSuccessMessage('Installment payment successful!');
                             }
+                            setShowSuccessModal(true);
+
                         } else {
                             alert('Payment verification failed');
                         }
@@ -154,7 +153,7 @@ const MyInstallments = () => {
     }, {});
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto relative">
             <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
                 <CreditCard className="text-blue-600" /> My Installments
             </h1>
@@ -285,6 +284,25 @@ const MyInstallments = () => {
                             </div>
                         );
                     })}
+                </div>
+            )}
+
+            {/* Success Modal */}
+            {showSuccessModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center transform scale-100 animate-in zoom-in-95 duration-200">
+                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <CheckCircle size={32} strokeWidth={3} />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h3>
+                        <p className="text-gray-600 mb-6">{successMessage}</p>
+                        <button
+                            onClick={() => setShowSuccessModal(false)}
+                            className="w-full py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg hover:shadow-green-500/30"
+                        >
+                            Continue
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
