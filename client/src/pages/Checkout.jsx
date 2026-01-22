@@ -10,6 +10,7 @@ const Checkout = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [paymentMode, setPaymentMode] = useState('full'); // 'full' or 'installment'
 
     // Load Razorpay script
     useEffect(() => {
@@ -40,8 +41,18 @@ const Checkout = () => {
             const res = await api.post('/payment/initiate', {
                 items: cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price })),
                 total_amount: total,
-                userId: user.id
+                userId: user.id,
+                payment_mode: paymentMode,
+                installment_reason: 'Checkout request'
             });
+
+            // Handle Installment Request Success
+            if (res.data.isInstallmentRequest) {
+                alert(res.data.message);
+                clearCart();
+                navigate('/orders'); // Redirect to orders or installments page
+                return;
+            }
 
             const { orderId, razorpayOrderId, amount, currency, keyId } = res.data;
 
@@ -128,6 +139,42 @@ const Checkout = () => {
                     <span className="text-blue-600">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
 
+                {/* Payment Mode Selection */}
+                <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <h3 className="font-bold text-gray-700 mb-3">Select Payment Mode</h3>
+                    <div className="space-y-3">
+                        <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${paymentMode === 'full' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-100'}`}>
+                            <input
+                                type="radio"
+                                name="paymentMode"
+                                value="full"
+                                checked={paymentMode === 'full'}
+                                onChange={() => setPaymentMode('full')}
+                                className="mr-3 h-5 w-5 text-blue-600"
+                            />
+                            <div>
+                                <div className="font-bold text-gray-800">Pay Full Amount Now</div>
+                                <div className="text-sm text-gray-500">Fast and secure payment via Razorpay</div>
+                            </div>
+                        </label>
+
+                        <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${paymentMode === 'installment' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-100'}`}>
+                            <input
+                                type="radio"
+                                name="paymentMode"
+                                value="installment"
+                                checked={paymentMode === 'installment'}
+                                onChange={() => setPaymentMode('installment')}
+                                className="mr-3 h-5 w-5 text-blue-600"
+                            />
+                            <div>
+                                <div className="font-bold text-gray-800">Pay in 2 Installments</div>
+                                <div className="text-sm text-gray-500">Request approval to pay 50% now and 50% later</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 {error && <div className="bg-red-50 text-red-500 p-3 rounded mb-4">{error}</div>}
 
                 <button
@@ -135,9 +182,13 @@ const Checkout = () => {
                     disabled={loading}
                     className={`w-full py-4 rounded-xl font-bold text-white text-lg transition-all shadow-lg ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 hover:shadow-blue-500/30'}`}
                 >
-                    {loading ? 'Processing...' : 'Proceed to Payment'}
+                    {loading ? 'Processing...' : (paymentMode === 'installment' ? 'Request Installment Plan' : 'Proceed to Payment')}
                 </button>
-                <p className="text-center text-xs text-gray-400 mt-4">Safe and Secure Payment via Razorpay</p>
+                <p className="text-center text-xs text-gray-400 mt-4">
+                    {paymentMode === 'installment'
+                        ? 'Your order will be pending approval. You can pay installments after admin approval.'
+                        : 'Safe and Secure Payment via Razorpay'}
+                </p>
             </div>
         </div>
     );

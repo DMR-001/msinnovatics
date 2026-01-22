@@ -3,7 +3,7 @@ import api from '../api';
 import { X, CreditCard } from 'lucide-react';
 
 const RequestInstallmentModal = ({ isOpen, onClose, order, onSuccess }) => {
-    const [requestedInstallments, setRequestedInstallments] = useState(3);
+    const [requestedInstallments, setRequestedInstallments] = useState(2);
     const [reason, setReason] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -26,7 +26,7 @@ const RequestInstallmentModal = ({ isOpen, onClose, order, onSuccess }) => {
             onSuccess();
             onClose();
             setReason('');
-            setRequestedInstallments(3);
+            setRequestedInstallments(2);
         } catch (err) {
             console.error('Error requesting installment:', err);
             setError(err.response?.data?.message || 'Failed to submit request');
@@ -75,7 +75,7 @@ const RequestInstallmentModal = ({ isOpen, onClose, order, onSuccess }) => {
                         </div>
                     </div>
 
-                    {/* Number of Installments */}
+                    {/* Number of Installments - Fixed to 2 */}
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
                             Number of Installments
@@ -86,9 +86,7 @@ const RequestInstallmentModal = ({ isOpen, onClose, order, onSuccess }) => {
                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             required
                         >
-                            {[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(num => (
-                                <option key={num} value={num}>{num} Installments</option>
-                            ))}
+                            <option value={2}>2 Installments (50% each)</option>
                         </select>
                     </div>
 
@@ -137,8 +135,8 @@ const RequestInstallmentModal = ({ isOpen, onClose, order, onSuccess }) => {
                             type="submit"
                             disabled={loading}
                             className={`flex-1 px-6 py-3 rounded-xl font-semibold text-white transition-all ${loading
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg'
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg'
                                 }`}
                         >
                             {loading ? 'Submitting...' : 'Submit Request'}

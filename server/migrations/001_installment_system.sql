@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS installment_requests (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     total_amount DECIMAL(10, 2) NOT NULL,
-    requested_installments INTEGER NOT NULL CHECK (requested_installments >= 2 AND requested_installments <= 12),
+    requested_installments INTEGER NOT NULL CHECK (requested_installments = 2),
     reason TEXT,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
     admin_notes TEXT,

@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
-import { Package, Clock, CheckCircle, XCircle, RefreshCw, CreditCard } from 'lucide-react';
-import RequestInstallmentModal from '../components/RequestInstallmentModal';
+import { Package, Clock, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [retryingOrderId, setRetryingOrderId] = useState(null);
-    const [showInstallmentModal, setShowInstallmentModal] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -185,38 +182,11 @@ const Orders = () => {
                                         {retryingOrderId === order.id ? 'Processing...' : 'Retry Payment'}
                                     </button>
                                 )}
-
-                                {/* Request Installment Button */}
-                                {order.status === 'completed' && (
-                                    <button
-                                        onClick={() => {
-                                            setSelectedOrder(order);
-                                            setShowInstallmentModal(true);
-                                        }}
-                                        className="mt-3 w-full md:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all flex items-center justify-center gap-2 font-semibold"
-                                    >
-                                        <CreditCard size={18} />
-                                        Request Installment Plan
-                                    </button>
-                                )}
                             </div>
                         </div>
                     ))}
                 </div>
             )}
-
-            {/* Request Installment Modal */}
-            <RequestInstallmentModal
-                isOpen={showInstallmentModal}
-                onClose={() => {
-                    setShowInstallmentModal(false);
-                    setSelectedOrder(null);
-                }}
-                order={selectedOrder}
-                onSuccess={() => {
-                    // Optionally refresh orders
-                }}
-            />
         </div>
     );
 };

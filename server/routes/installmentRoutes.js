@@ -16,8 +16,8 @@ router.post('/request', verifyToken, async (req, res) => {
             return res.status(400).json({ message: 'Order ID and number of installments are required' });
         }
 
-        if (requested_installments < 2 || requested_installments > 12) {
-            return res.status(400).json({ message: 'Number of installments must be between 2 and 12' });
+        if (requested_installments !== 2) {
+            return res.status(400).json({ message: 'Only 2 installments are allowed' });
         }
 
         // Verify order exists and belongs to user

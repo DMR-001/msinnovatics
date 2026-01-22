@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { Plus, Trash2, Edit, Package, ShoppingBag } from 'lucide-react';
+import { Plus, Trash2, Edit, Package, ShoppingBag, CreditCard, FileText } from 'lucide-react';
+import InstallmentRequestsAdmin from './InstallmentRequestsAdmin';
+import InstallmentsOverviewAdmin from './InstallmentsOverviewAdmin';
+
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('products');
@@ -74,6 +77,18 @@ const AdminDashboard = () => {
                     className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${activeTab === 'orders' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
                 >
                     <ShoppingBag size={20} /> Orders
+                </button>
+                <button
+                    onClick={() => setActiveTab('installment-requests')}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${activeTab === 'installment-requests' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                >
+                    <FileText size={20} /> Installment Requests
+                </button>
+                <button
+                    onClick={() => setActiveTab('installments')}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${activeTab === 'installments' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                >
+                    <CreditCard size={20} /> All Installments
                 </button>
             </div>
 
