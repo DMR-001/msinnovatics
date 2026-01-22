@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 const PaymentSuccess = () => {
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get('order_id');
-    const trackingId = searchParams.get('tracking_id');
+    const paymentId = searchParams.get('payment_id');
     const { clearCart } = useCart();
 
     useEffect(() => {
@@ -26,10 +26,10 @@ const PaymentSuccess = () => {
                     <span className="text-gray-500">Order ID:</span>
                     <span className="font-bold text-gray-900">#{orderId}</span>
                 </div>
-                {trackingId && (
+                {paymentId && (
                     <div className="flex justify-between">
-                        <span className="text-gray-500">Transaction ID:</span>
-                        <span className="font-mono text-gray-900">{trackingId}</span>
+                        <span className="text-gray-500">Payment ID:</span>
+                        <span className="font-mono text-gray-900">{paymentId}</span>
                     </div>
                 )}
             </div>

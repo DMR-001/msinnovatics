@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../api';
@@ -11,10 +11,20 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    // Load Razorpay script
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
     if (cart.length === 0) {
-        // Don't redirect immediately to avoid flash if checking cart
-        // navigate('/cart');
-        return <div className="p-8 text-center">Redirecting to cart...</div>;
+        return <div className="p-8 text-center">Your cart is empty. Redirecting...</div>;
     }
 
     const handlePayment = async () => {
@@ -30,42 +40,65 @@ const Checkout = () => {
             const res = await api.post('/payment/initiate', {
                 items: cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price })),
                 total_amount: total,
-                userId: user.id,
-                billing_info: {
-                    name: user.name || '',
-                    email: user.email || '',
-                    // Add other fields if captured in registration or profile
-                    // tel: user.phone || '9999999999', 
-                }
+                userId: user.id
             });
 
-            const { encRequest, accessCode, url } = res.data;
+            const { orderId, razorpayOrderId, amount, currency, keyId } = res.data;
 
-            // 2. Create Hidden Form and Submit to CCAvenue
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = url;
+            // 2. Configure Razorpay Options
+            const options = {
+                key: keyId,
+                amount: amount,
+                currency: currency,
+                name: 'MS Innovatics',
+                description: 'E-commerce Purchase',
+                order_id: razorpayOrderId,
+                handler: async function (response) {
+                    // Payment successful, verify on backend
+                    try {
+                        const verifyRes = await api.post('/payment/verify', {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            order_id: orderId
+                        });
 
-            const encRequestInput = document.createElement('input');
-            encRequestInput.type = 'hidden';
-            encRequestInput.name = 'encRequest';
-            encRequestInput.value = encRequest;
-            form.appendChild(encRequestInput);
+                        if (verifyRes.data.success) {
+                            // Clear cart and redirect to success page
+                            clearCart();
+                            navigate(`/payment/success?order_id=${orderId}&payment_id=${response.razorpay_payment_id}`);
+                        } else {
+                            navigate(`/payment/failure?order_id=${orderId}`);
+                        }
+                    } catch (err) {
+                        console.error('Verification error:', err);
+                        navigate(`/payment/failure?order_id=${orderId}`);
+                    }
+                },
+                prefill: {
+                    name: user.name || '',
+                    email: user.email || '',
+                    contact: user.phone || ''
+                },
+                theme: {
+                    color: '#3B82F6' // Blue color matching your theme
+                },
+                modal: {
+                    ondismiss: function () {
+                        setLoading(false);
+                        setError('Payment cancelled. Your order is still pending.');
+                    }
+                }
+            };
 
-            const accessCodeInput = document.createElement('input');
-            accessCodeInput.type = 'hidden';
-            accessCodeInput.name = 'access_code';
-            accessCodeInput.value = accessCode;
-            form.appendChild(accessCodeInput);
+            // 3. Open Razorpay Checkout Modal
+            const razorpay = new window.Razorpay(options);
+            razorpay.open();
 
-            document.body.appendChild(form);
-
-            // Clear cart locally as order is created (pending) on server. 
-            // User can re-add if they cancel, or we can clear ONLY on success return.
-            // Usually better to keep cart until success, but simple approach: clear here or on success page.
-            // Let's NOT clear cart here in case they cancel.
-
-            form.submit();
+            razorpay.on('payment.failed', function (response) {
+                setLoading(false);
+                setError(response.error.description || 'Payment failed. Please try again.');
+            });
 
         } catch (err) {
             console.error(err);
@@ -104,7 +137,7 @@ const Checkout = () => {
                 >
                     {loading ? 'Processing...' : 'Proceed to Payment'}
                 </button>
-                <p className="text-center text-xs text-gray-400 mt-4">Safe and Secure Payment via CCAvenue</p>
+                <p className="text-center text-xs text-gray-400 mt-4">Safe and Secure Payment via Razorpay</p>
             </div>
         </div>
     );

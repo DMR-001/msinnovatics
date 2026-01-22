@@ -12,9 +12,7 @@ const allowedOrigins = [
     'https://msinnovatics.vercel.app',
     'https://msinnovatics.com',
     'https://www.msinnovatics.com',
-    'http://localhost:5173',
-    'https://test.ccavenue.com',
-    'https://secure.ccavenue.com'
+    'http://localhost:5173'
 ];
 
 app.enable('trust proxy');
@@ -36,7 +34,7 @@ app.use(cors({
 
 app.enable('trust proxy'); // Important for Vercel/proxies
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Required for CCAvenue form POST
+app.use(express.urlencoded({ extended: true })); // Required for form data parsing
 
 const db = require('./db');
 const authRoutes = require('./routes/authRoutes');
@@ -61,7 +59,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/payment', paymentRoutes); // Must handle POST from CCAvenue
+app.use('/api/payment', paymentRoutes); // Razorpay payment routes
 
 if (require.main === module) {
     app.listen(port, () => {
