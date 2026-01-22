@@ -160,6 +160,9 @@ const AdminDashboard = () => {
                 </div>
             )}
 
+            {activeTab === 'installment-requests' && <InstallmentRequestsAdmin />}
+            {activeTab === 'installments' && <InstallmentsOverviewAdmin />}
+
             {/* Add Product Modal */}
             {showAddModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
