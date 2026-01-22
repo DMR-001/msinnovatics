@@ -71,8 +71,9 @@ router.post('/initiate', verifyToken, async (req, res) => {
                 // Some implementations might use product_id or just id
                 const productId = item.product_id || item.id;
 
+                // FIXED: Column name is price_at_purchase, not price
                 await client.query(
-                    'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
+                    'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES ($1, $2, $3, $4)',
                     [orderId, productId, item.quantity, price]
                 );
             }
