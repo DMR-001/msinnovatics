@@ -1,7 +1,5 @@
 const db = require('../db');
 
-const { sendMail } = require('../services/emailService');
-
 exports.createOrder = async (req, res) => {
     const { items, total_amount } = req.body;
     const userId = req.userId;
@@ -15,10 +13,6 @@ exports.createOrder = async (req, res) => {
 
     try {
         await client.query('BEGIN');
-
-        // Get User Email for Notification
-        const userResult = await client.query('SELECT email, name FROM users WHERE id = $1', [userId]);
-        const user = userResult.rows[0];
 
         // Create Order
         const orderResult = await client.query(
@@ -36,23 +30,6 @@ exports.createOrder = async (req, res) => {
         }
 
         await client.query('COMMIT');
-
-        // Send Order Confirmation Email (Non-blocking)
-        sendMail({
-            to: user.email,
-            subject: `Order Confirmation - #${orderId}`,
-            text: `Thank you for your order! Your Order ID is #${orderId}. Total Amount: ₹${total_amount}`,
-            html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                    <h2>Thank you for your order, ${user.name}!</h2>
-                    <p>We have received your order.</p>
-                    <p><strong>Order ID:</strong> #${orderId}</p>
-                    <p><strong>Total Amount:</strong> ₹${total_amount}</p>
-                    <p>We will notify you once it ships.</p>
-                </div>
-            `
-        }).catch(err => console.error('Failed to send order email:', err.message));
-
         res.status(201).json({ message: 'Order created successfully', orderId });
     } catch (error) {
         await client.query('ROLLBACK');
