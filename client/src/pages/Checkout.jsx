@@ -50,7 +50,6 @@ const Checkout = () => {
 
             // Handle Installment Request Success
             if (res.data.isInstallmentRequest) {
-                clearCart();
                 setSuccessMessage(res.data.message);
                 setShowSuccessModal(true);
                 setLoading(false);
@@ -207,6 +206,7 @@ const Checkout = () => {
                         <p className="text-gray-600 mb-6">{successMessage}</p>
                         <button
                             onClick={() => {
+                                clearCart();
                                 setShowSuccessModal(false);
                                 navigate('/orders');
                             }}
