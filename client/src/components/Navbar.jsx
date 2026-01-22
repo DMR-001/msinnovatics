@@ -39,6 +39,7 @@ const Navbar = () => {
                                 <Link to="/admin" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Admin</Link>
                             )}
                             <Link to="/orders" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Orders</Link>
+                            <Link to="/installments" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Installments</Link>
                             <span className="text-gray-800 font-medium">Hello, {user.name}</span>
                             <button onClick={logout} className="text-gray-500 hover:text-red-500 transition-colors" title="Logout">
                                 <LogOut size={20} />
@@ -85,6 +86,7 @@ const Navbar = () => {
                                     <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">Admin Dashboard</Link>
                                 )}
                                 <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">My Orders</Link>
+                                <Link to="/installments" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">My Installments</Link>
                                 <button
                                     onClick={() => { logout(); setIsMenuOpen(false); }}
                                     className="text-left text-red-500 hover:text-red-700 font-medium py-2 flex items-center gap-2"

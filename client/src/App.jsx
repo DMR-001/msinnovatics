@@ -21,6 +21,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import RefundPolicy from './pages/RefundPolicy';
 import TermsConditions from './pages/TermsConditions';
 import ShippingPolicy from './pages/ShippingPolicy';
+import MyInstallments from './pages/MyInstallments';
 
 function App() {
   return (
@@ -48,6 +49,11 @@ function App() {
                 <Route path="/orders" element={
                   <ProtectedRoute>
                     <Orders />
+                  </ProtectedRoute>
+                } />
+                <Route path="/installments" element={
+                  <ProtectedRoute>
+                    <MyInstallments />
                   </ProtectedRoute>
                 } />
                 <Route path="/payment/success" element={<PaymentSuccess />} />
