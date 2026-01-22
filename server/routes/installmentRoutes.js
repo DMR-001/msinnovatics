@@ -158,7 +158,7 @@ router.get('/requests/all', verifyAdmin, async (req, res) => {
 // Approve installment request and create installment plan
 router.post('/approve/:requestId', verifyAdmin, async (req, res) => {
     const { requestId } = req.params;
-    const { installments } = req.body; // Array of {amount, due_date}
+    const { installments, approvedTotal } = req.body; // Array of {amount, due_date}, and optional approvedTotal
 
     const client = await db.pool.connect();
 
@@ -190,15 +190,24 @@ router.post('/approve/:requestId', verifyAdmin, async (req, res) => {
         }
 
         const totalInstallmentAmount = installments.reduce((sum, inst) => sum + parseFloat(inst.amount), 0);
-        const requestAmount = parseFloat(request.total_amount);
+        // Use approvedTotal if provided, otherwise default to original request amount
+        const targetAmount = approvedTotal ? parseFloat(approvedTotal) : parseFloat(request.total_amount);
 
-        if (Math.abs(totalInstallmentAmount - requestAmount) > 0.01) {
+        if (Math.abs(totalInstallmentAmount - targetAmount) > 0.1) {
             await client.query('ROLLBACK');
             return res.status(400).json({
-                message: 'Total installment amount must equal order amount',
-                expected: requestAmount,
+                message: 'Total installment amount must equal the approved amount',
+                expected: targetAmount,
                 received: totalInstallmentAmount
             });
+        }
+
+        // Update total_amount if it changed
+        if (approvedTotal && Math.abs(parseFloat(approvedTotal) - parseFloat(request.total_amount)) > 0.01) {
+            await client.query(
+                'UPDATE installment_requests SET total_amount = $1 WHERE id = $2',
+                [approvedTotal, requestId]
+            );
         }
 
         // Update request status
