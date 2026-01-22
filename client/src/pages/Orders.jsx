@@ -26,6 +26,21 @@ const Orders = () => {
         fetchOrders();
     }, []);
 
+    // Load Razorpay script for retry payment functionality
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            // Cleanup: remove script when component unmounts
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, []);
+
     const handleRetryPayment = async (order) => {
         setRetryingOrderId(order.id);
         try {
@@ -87,6 +102,13 @@ const Orders = () => {
                     }
                 }
             };
+
+            // Check if Razorpay script is loaded
+            if (!window.Razorpay) {
+                alert('Payment system is loading. Please try again in a moment.');
+                setRetryingOrderId(null);
+                return;
+            }
 
             const razorpay = new window.Razorpay(options);
             razorpay.open();
@@ -152,8 +174,8 @@ const Orders = () => {
                                         onClick={() => handleRetryPayment(order)}
                                         disabled={retryingOrderId === order.id}
                                         className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all ${retryingOrderId === order.id
-                                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
                                             }`}
                                     >
                                         <RefreshCw size={16} className={retryingOrderId === order.id ? 'animate-spin' : ''} />
