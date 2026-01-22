@@ -26,6 +26,11 @@ const runMigration = async () => {
                 ADD COLUMN IF NOT EXISTS specifications JSONB DEFAULT '{}',
                 ADD COLUMN IF NOT EXISTS features JSONB DEFAULT '[]',
                 ADD COLUMN IF NOT EXISTS specifications_text TEXT;
+                
+                ALTER TABLE users
+                ADD COLUMN IF NOT EXISTS otp_code VARCHAR(6),
+                ADD COLUMN IF NOT EXISTS otp_expiry TIMESTAMP,
+                ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE;
             `);
             console.log('Database migration completed: Added tracking columns to orders.');
         } finally {

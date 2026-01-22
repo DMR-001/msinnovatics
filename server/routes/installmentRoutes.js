@@ -155,6 +155,10 @@ router.get('/requests/all', verifyAdmin, async (req, res) => {
     }
 });
 
+const { sendMail } = require('../services/emailService');
+
+// ... (existing code)
+
 // Approve installment request and create installment plan
 router.post('/approve/:requestId', verifyAdmin, async (req, res) => {
     const { requestId } = req.params;
@@ -165,9 +169,12 @@ router.post('/approve/:requestId', verifyAdmin, async (req, res) => {
     try {
         await client.query('BEGIN');
 
-        // Get request details
+        // Get request details with User Email
         const requestResult = await client.query(
-            'SELECT * FROM installment_requests WHERE id = $1',
+            `SELECT ir.*, u.email, u.name 
+             FROM installment_requests ir
+             JOIN users u ON ir.user_id = u.id
+             WHERE ir.id = $1`,
             [requestId]
         );
 
@@ -217,6 +224,7 @@ router.post('/approve/:requestId', verifyAdmin, async (req, res) => {
         );
 
         // Create installments
+        let installmentDetailsHtml = '<ul>';
         for (let i = 0; i < installments.length; i++) {
             await client.query(
                 `INSERT INTO installments 
@@ -232,9 +240,28 @@ router.post('/approve/:requestId', verifyAdmin, async (req, res) => {
                     'pending'
                 ]
             );
+            installmentDetailsHtml += `<li>Installment ${i + 1}: ₹${installments[i].amount} due on ${new Date(installments[i].due_date).toLocaleDateString()}</li>`;
         }
+        installmentDetailsHtml += '</ul>';
 
         await client.query('COMMIT');
+
+        // Send Approval Email
+        sendMail({
+            to: request.email,
+            subject: 'Installment Request Approved - MS Innovatics',
+            text: `Your installment request for Order #${request.order_id} has been approved. Please check your dashboard for details.`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Request Approved!</h2>
+                    <p>Dear ${request.name},</p>
+                    <p>Great news! Your installment request for <strong>Order #${request.order_id}</strong> has been approved.</p>
+                    <h3>Payment Plan:</h3>
+                    ${installmentDetailsHtml}
+                    <p>Please log in to your dashboard to make payments.</p>
+                </div>
+            `
+        }).catch(err => console.error('Failed to send approval email:', err.message));
 
         res.json({ message: 'Installment request approved successfully' });
 
@@ -253,6 +280,20 @@ router.post('/reject/:requestId', verifyAdmin, async (req, res) => {
     const { admin_notes } = req.body;
 
     try {
+        // Fetch request with user email to notify
+        const requestQuery = await db.query(
+            `SELECT ir.*, u.email, u.name 
+             FROM installment_requests ir
+             JOIN users u ON ir.user_id = u.id
+             WHERE ir.id = $1`,
+            [requestId]
+        );
+
+        if (requestQuery.rows.length === 0) {
+            return res.status(404).json({ message: 'Request not found' });
+        }
+        const request = requestQuery.rows[0];
+
         const result = await db.query(
             `UPDATE installment_requests 
              SET status = $1, admin_notes = $2, updated_at = CURRENT_TIMESTAMP 
@@ -262,8 +303,25 @@ router.post('/reject/:requestId', verifyAdmin, async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Request not found or already processed' });
+            return res.status(400).json({ message: 'Request already processed' });
         }
+
+        // Send Rejection Email
+        sendMail({
+            to: request.email,
+            subject: 'Update on Your Installment Request - MS Innovatics',
+            text: `Your installment request for Order #${request.order_id} was not approved. Reason: ${admin_notes}`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Request Update</h2>
+                    <p>Dear ${request.name},</p>
+                    <p>We have reviewed your installment request for <strong>Order #${request.order_id}</strong>.</p>
+                    <p>Unfortunately, we cannot approve it at this time.</p>
+                    <p><strong>Reason:</strong> ${admin_notes}</p>
+                    <p>If you have questions, please contact support.</p>
+                </div>
+            `
+        }).catch(err => console.error('Failed to send rejection email:', err.message));
 
         res.json({ message: 'Installment request rejected', request: result.rows[0] });
 
