@@ -4,6 +4,12 @@ import api from '../api';
 import { CreditCard, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 
 const MyInstallments = () => {
+    const [installments, setInstallments] = useState([]);
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [payingInstallmentId, setPayingInstallmentId] = useState(null);
+    const navigate = useNavigate();
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
 
