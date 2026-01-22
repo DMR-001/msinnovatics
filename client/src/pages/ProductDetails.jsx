@@ -38,6 +38,11 @@ const ProductDetails = () => {
         // navigate('/cart'); 
     };
 
+    const handleBuyNow = () => {
+        addToCart(product);
+        navigate('/cart');
+    };
+
     return (
         <div className="max-w-6xl mx-auto">
             {/* Breadcrumbs or Back Link */}
@@ -123,7 +128,12 @@ const ProductDetails = () => {
                                 <ShoppingCart size={20} />
                                 {product.stock > 0 ? 'Add to Cart' : 'Sold Out'}
                             </button>
-                            <button className="px-6 py-4 rounded-xl border-2 border-gray-200 text-gray-700 font-bold hover:border-gray-900 hover:text-gray-900 transition-colors">
+                            <button
+                                onClick={handleBuyNow}
+                                disabled={product.stock <= 0}
+                                className={`px-6 py-4 rounded-xl border-2 border-gray-200 text-gray-700 font-bold hover:border-gray-900 hover:text-gray-900 transition-colors
+                                ${product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
                                 Buy Now
                             </button>
                         </div>
