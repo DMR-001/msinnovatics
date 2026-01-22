@@ -180,10 +180,15 @@ const ApprovalModal = ({ request, onClose, onSuccess }) => {
     const [installments, setInstallments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [approvedAmount, setApprovedAmount] = useState(request.total_amount);
 
     useEffect(() => {
-        // Initialize with equal installments
-        const amount = parseFloat(request.total_amount);
+        // Initialize with equal installments based on APPROVED amount
+        recalculateInstallments(request.total_amount);
+    }, [request]);
+
+    const recalculateInstallments = (total) => {
+        const amount = parseFloat(total);
         const count = request.requested_installments;
         const perInstallment = amount / count;
 
@@ -198,7 +203,13 @@ const ApprovalModal = ({ request, onClose, onSuccess }) => {
         });
 
         setInstallments(initialInstallments);
-    }, [request]);
+    };
+
+    const handleAmountChange = (e) => {
+        const newAmount = e.target.value;
+        setApprovedAmount(newAmount);
+        recalculateInstallments(newAmount);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -206,7 +217,8 @@ const ApprovalModal = ({ request, onClose, onSuccess }) => {
 
         try {
             await api.post(`/installments/approve/${request.id}`, {
-                installments: installments
+                installments: installments,
+                approvedTotal: approvedAmount
             });
             setShowSuccess(true);
             setTimeout(() => {
@@ -240,7 +252,8 @@ const ApprovalModal = ({ request, onClose, onSuccess }) => {
     };
 
     const totalConfigured = installments.reduce((sum, inst) => sum + parseFloat(inst.amount || 0), 0);
-    const isValid = Math.abs(totalConfigured - parseFloat(request.total_amount)) < 0.01;
+    const targetTotal = parseFloat(approvedAmount);
+    const isValid = Math.abs(totalConfigured - targetTotal) < 0.1;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -252,15 +265,25 @@ const ApprovalModal = ({ request, onClose, onSuccess }) => {
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     <div className="bg-gray-50 p-4 rounded-xl">
-                        <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                             <div>
-                                <span className="text-gray-600">Total Amount:</span>
-                                <div className="font-bold text-lg text-blue-600">
+                                <span className="text-gray-600 block mb-1">Original Request:</span>
+                                <div className="font-medium text-gray-500">
                                     ₹{parseFloat(request.total_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                 </div>
                             </div>
                             <div>
-                                <span className="text-gray-600">Configured Total:</span>
+                                <label className="text-blue-600 font-bold block mb-1">Approved Total (Edit):</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    value={approvedAmount}
+                                    onChange={handleAmountChange}
+                                    className="w-full px-3 py-1 border-2 border-blue-200 rounded-lg focus:border-blue-500 outline-none font-bold text-lg"
+                                />
+                            </div>
+                            <div>
+                                <span className="text-gray-600 block mb-1">Configured Total:</span>
                                 <div className={`font-bold text-lg ${isValid ? 'text-green-600' : 'text-red-600'}`}>
                                     ₹{totalConfigured.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                 </div>
