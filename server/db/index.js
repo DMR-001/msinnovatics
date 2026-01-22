@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -25,7 +26,8 @@ const runMigration = async () => {
                 ALTER TABLE products
                 ADD COLUMN IF NOT EXISTS specifications JSONB DEFAULT '{}',
                 ADD COLUMN IF NOT EXISTS features JSONB DEFAULT '[]',
-                ADD COLUMN IF NOT EXISTS specifications_text TEXT;
+                ADD COLUMN IF NOT EXISTS specifications_text TEXT,
+                ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE;
             `);
             console.log('Database migration completed: Added tracking columns to orders.');
         } finally {
