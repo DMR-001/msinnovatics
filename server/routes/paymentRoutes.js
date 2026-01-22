@@ -5,11 +5,25 @@ const crypto = require('crypto');
 const db = require('../db');
 const { verifyToken } = require('../middleware/authMiddleware');
 
-// Initialize Razorpay instance
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// Lazy initialization of Razorpay instance
+let razorpay = null;
+
+function getRazorpayInstance() {
+    if (!razorpay) {
+        const keyId = process.env.RAZORPAY_KEY_ID;
+        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+        if (!keyId || !keySecret) {
+            throw new Error('Razorpay credentials not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables.');
+        }
+
+        razorpay = new Razorpay({
+            key_id: keyId,
+            key_secret: keySecret
+        });
+    }
+    return razorpay;
+}
 
 router.post('/initiate', verifyToken, async (req, res) => {
     const { items, total_amount } = req.body;
@@ -43,7 +57,8 @@ router.post('/initiate', verifyToken, async (req, res) => {
         }
 
         // 2. Create Razorpay Order
-        const razorpayOrder = await razorpay.orders.create({
+        const razorpayInstance = getRazorpayInstance();
+        const razorpayOrder = await razorpayInstance.orders.create({
             amount: Math.round(total_amount * 100), // Amount in paise (smallest currency unit)
             currency: 'INR',
             receipt: `order_${orderId}`,
@@ -96,7 +111,8 @@ router.post('/verify', verifyToken, async (req, res) => {
         }
 
         // 2. Fetch Payment Details from Razorpay
-        const payment = await razorpay.payments.fetch(razorpay_payment_id);
+        const razorpayInstance = getRazorpayInstance();
+        const payment = await razorpayInstance.payments.fetch(razorpay_payment_id);
 
         // 3. Verify Order exists and amount matches
         const orderResult = await db.query('SELECT * FROM orders WHERE id = $1', [order_id]);

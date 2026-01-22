@@ -27,10 +27,10 @@ app.use(cors({
 
         // Check if the origin is in the allowed list
         if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, origin); // Return the actual origin instead of true
+            return callback(null, true); // Allow the origin
         } else {
             console.log('CORS blocked origin:', origin);
-            callback(new Error('Not allowed by CORS'));
+            return callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,
