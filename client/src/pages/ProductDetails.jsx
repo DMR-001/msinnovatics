@@ -134,18 +134,25 @@ const ProductDetails = () => {
             <div className="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <h3 className="text-2xl font-bold mb-6">Product Specifications & Features</h3>
                 <div className="prose max-w-none text-gray-600">
-                    <p>
-                        Comprehensive documentation and clean code structure ensure that this project is ready for both learning and production deployment.
-                        Below are the key technical specifications included:
-                    </p>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 list-none pl-0">
-                        <li className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full"></div> <strong>Technology Stack:</strong> React, Node.js, PostgreSQL/MongoDB</li>
-                        <li className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full"></div> <strong>Responsive Design:</strong> Fully optimized for Mobile & Desktop</li>
-                        <li className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full"></div> <strong>Authentication:</strong> Secure JWT Login & Registration</li>
-                        <li className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full"></div> <strong>Payment Gateway:</strong> Integrated CCAvenue / Stripe Support</li>
-                        <li className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full"></div> <strong>Admin Panel:</strong> Dashboard for managing users & orders</li>
-                        <li className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full"></div> <strong>Deployment:</strong> Ready for Vercel, Netlify, or AWS</li>
-                    </ul>
+                    {product.specifications_text ? (
+                        <div className="whitespace-pre-wrap leading-relaxed font-sans text-base">
+                            {product.specifications_text}
+                        </div>
+                    ) : (
+                        <div>
+                            {/* Fallback for legacy data or empty state */}
+                            <p className="mb-4">No detailed specifications available for this project.</p>
+                            {product.features && product.features.length > 0 && (
+                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 list-none pl-0">
+                                    {product.features.map((feat, index) => (
+                                        <li key={index} className="flex items-center gap-2">
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div> {feat}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
