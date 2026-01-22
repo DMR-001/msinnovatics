@@ -29,8 +29,8 @@ const MyInstallments = () => {
                 api.get('/installments/my-installments'),
                 api.get('/installments/my-requests')
             ]);
-            setInstallments(installmentsRes.data);
-            setRequests(requestsRes.data);
+            setInstallments(Array.isArray(installmentsRes.data) ? installmentsRes.data : []);
+            setRequests(Array.isArray(requestsRes.data) ? requestsRes.data : []);
         } catch (err) {
             console.error('Error fetching data:', err);
             setError('Failed to load installment data');
