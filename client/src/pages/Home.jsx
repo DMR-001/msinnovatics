@@ -167,9 +167,6 @@ const Home = () => {
                                 className="h-24 w-auto object-contain"
                             />
                         }
-                        <div className="h-24 w-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 text-sm font-medium">
-                            Sprout School Logo
-                        </div>
                         <div className="text-center">
                             <h3 className="text-xl font-bold text-gray-900">Sprout School</h3>
                             <p className="text-gray-500 text-sm mt-1">School Management Solution</p>
