@@ -1,41 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: 'Outfit', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #f9fafb;
+  --ink: #09090E;
+  --accent: #2563EB;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  color: #1f2937;
-  background-color: #f9fafb;
+  color: var(--ink);
+  background-color: #FAFAFA;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1; 
-  border-radius: 5px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8; 
+/* ── Dot grid — used in dark hero sections ── */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(96, 165, 250, 0.1) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
-/* Smooth Scrolling */
-html {
-  scroll-behavior: smooth;
+/* ── Shimmer text ── */
+@keyframes shimmer {
+  0%   { background-position: 0%   center; }
+  100% { background-position: 200% center; }
 }
+
+.shimmer-text {
+  background: linear-gradient(90deg, #60A5FA 0%, #BAE6FD 35%, #F0F9FF 50%, #BAE6FD 65%, #60A5FA 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 5s linear infinite;
+}
+
+/* ── Entrance animations (staggered fade-up) ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.anim-0 { animation: fadeUp 0.6s ease both; }
+.anim-1 { animation: fadeUp 0.6s 0.10s ease both; }
+.anim-2 { animation: fadeUp 0.6s 0.22s ease both; }
+.anim-3 { animation: fadeUp 0.6s 0.34s ease both; }
+.anim-4 { animation: fadeUp 0.6s 0.46s ease both; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
