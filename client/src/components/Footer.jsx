@@ -46,7 +46,7 @@ export default function Footer() {
                             <span className="flex-shrink-0 bg-white/10 p-1.5 rounded-lg group-hover:bg-brand transition-colors">
                                 <Mail size={13} />
                             </span>
-                            support@msinnovatics.com
+                            <span className="break-all">support@msinnovatics.com</span>
                         </a>
                     </div>
                 </div>

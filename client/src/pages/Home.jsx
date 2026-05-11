@@ -100,7 +100,7 @@ export default function Home() {
         <div className="overflow-x-hidden">
 
             {/* ════════════════════ HERO ════════════════════════════════ */}
-            <section className="relative min-h-[88vh] flex items-center bg-ink overflow-hidden -mx-4 -mt-8 px-4">
+            <section className="relative min-h-[88vh] flex items-center bg-ink overflow-hidden w-full px-4 lg:px-8">
 
                 {/* dot-grid */}
                 <div
@@ -115,15 +115,15 @@ export default function Home() {
                 <div className="absolute top-[-8rem] left-[58%] w-[36rem] h-[36rem] rounded-full bg-blue-600 opacity-[0.13] blur-[100px] pointer-events-none" />
                 <div className="absolute bottom-[-6rem] left-[-4rem] w-[28rem] h-[28rem] rounded-full bg-violet-700 opacity-[0.10] blur-[80px] pointer-events-none" />
 
-                <div className="relative z-10 max-w-6xl mx-auto w-full py-28 lg:py-36">
+                <div className="relative z-10 max-w-7xl mx-auto w-full py-20 sm:py-28 lg:py-36">
                     <div className="max-w-3xl">
 
-                        <span className="anim-0 inline-flex items-center gap-2 bg-white/8 backdrop-blur-sm border border-white/12 text-blue-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-8 tracking-wide">
+                        <span className="anim-0 inline-flex items-center gap-2 bg-white/8 backdrop-blur-sm border border-white/12 text-blue-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 sm:mb-8 tracking-wide">
                             <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse inline-block" />
                             Technology Partner for Growing Businesses
                         </span>
 
-                        <h1 className="anim-1 font-display font-extrabold text-white leading-[1.08] text-5xl sm:text-6xl lg:text-7xl mb-7">
+                        <h1 className="anim-1 font-display font-extrabold text-white leading-[1.08] text-4xl sm:text-5xl lg:text-7xl mb-6 sm:mb-7">
                             Building Digital{' '}
                             <span className="shimmer-text">Solutions</span>
                             <br />That Drive Growth
@@ -155,10 +155,10 @@ export default function Home() {
             </section>
 
             {/* ════════════════ SERVICES ════════════════════════════════ */}
-            <section id="services" className="max-w-6xl mx-auto pt-24 pb-20 px-2">
+            <section id="services" className="w-full max-w-7xl mx-auto pt-24 pb-20 px-4 lg:px-8">
                 <div className="mb-14">
                     <p className="text-brand text-xs font-semibold uppercase tracking-widest mb-3">What We Do</p>
-                    <h2 className="font-display font-bold text-ink text-4xl lg:text-5xl leading-tight max-w-xl">
+                    <h2 className="font-display font-bold text-ink text-3xl sm:text-4xl lg:text-5xl leading-tight max-w-xl">
                         Services Built Around Your Needs
                     </h2>
                 </div>
@@ -197,7 +197,7 @@ export default function Home() {
             </section>
 
             {/* ════════════════ WHY US ══════════════════════════════════ */}
-            <section className="bg-ink -mx-4 px-4 py-24 relative overflow-hidden">
+            <section className="bg-ink w-full px-4 lg:px-8 py-24 relative overflow-hidden">
                 <div
                     className="absolute inset-0"
                     style={{
@@ -207,12 +207,12 @@ export default function Home() {
                 />
                 <div className="absolute top-0 right-[18%] w-[30rem] h-[30rem] bg-blue-700 opacity-10 blur-[80px] rounded-full pointer-events-none" />
 
-                <div className="relative z-10 max-w-6xl mx-auto">
+                <div className="relative z-10 max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
                         <div>
                             <p className="text-blue-400 text-xs font-semibold uppercase tracking-widest mb-3">Why MS Innovatics</p>
-                            <h2 className="font-display font-bold text-white text-4xl lg:text-5xl leading-tight mb-6">
+                            <h2 className="font-display font-bold text-white text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
                                 We Don't Just Build.<br />We Partner.
                             </h2>
                             <p className="text-gray-400 text-base leading-relaxed mb-10 max-w-md">
@@ -260,32 +260,20 @@ export default function Home() {
             </section>
 
             {/* ════════════════ CLIENTS ═════════════════════════════════ */}
-            <section id="clients" className="max-w-6xl mx-auto py-24 px-2">
+            <section id="clients" className="w-full max-w-7xl mx-auto py-24 px-4 lg:px-8">
                 <div className="text-center mb-14">
                     <p className="text-brand text-xs font-semibold uppercase tracking-widest mb-3">Our Clients</p>
-                    <h2 className="font-display font-bold text-ink text-4xl lg:text-5xl">Trusted By Organisations</h2>
+                    <h2 className="font-display font-bold text-ink text-3xl sm:text-4xl lg:text-5xl">Trusted By Organisations</h2>
                 </div>
 
                 <div className="flex justify-center">
-                    <div className="group bg-white border border-gray-100 rounded-2xl px-12 py-10 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col items-center gap-6 min-w-[280px]">
+                    <div className="group bg-white border border-gray-100 rounded-2xl px-6 sm:px-12 py-10 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col items-center gap-6 w-full max-w-xs">
 
-                        {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                            SPROUT SCHOOL LOGO
-                            ─────────────────────────────────────────────
-                            To add the logo:
-                              1. Drop the file at:
-                                 client/public/clients/sprout-school.png
-                              2. Replace the <div> below with:
-
-                                 <img
-                                   src="/clients/sprout-school.png"
-                                   alt="Sprout School"
-                                   className="h-20 w-auto object-contain"
-                                 />
-                        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-                        <div className="h-20 w-52 rounded-xl bg-gradient-to-br from-green-50 to-emerald-100 border-2 border-dashed border-emerald-200 flex items-center justify-center">
-                            <span className="text-emerald-500 text-xs font-semibold tracking-wide">Sprout School Logo</span>
-                        </div>
+                        <img
+                            src="/clients/sprout-school.png"
+                            alt="Sprout School"
+                            className="h-20 w-auto object-contain"
+                        />
 
                         <div className="text-center">
                             <h3 className="font-display font-bold text-ink text-xl">Sprout School</h3>
@@ -305,36 +293,36 @@ export default function Home() {
             </section>
 
             {/* ════════════════ CTA BANNER ══════════════════════════════ */}
-            <section className="max-w-6xl mx-auto pb-16 px-2">
-                <div className="relative bg-gradient-to-br from-brand to-brand-dark rounded-3xl px-8 py-14 text-center overflow-hidden shadow-2xl shadow-blue-700/20">
+            <section className="w-full max-w-7xl mx-auto pb-16 px-4 lg:px-8">
+                <div className="relative bg-gradient-to-br from-brand to-brand-dark rounded-3xl px-5 sm:px-8 py-12 sm:py-14 text-center overflow-hidden shadow-2xl shadow-blue-700/20">
                     <div
                         className="absolute inset-0 opacity-20"
                         style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }}
                     />
                     <div className="relative z-10">
-                        <h2 className="font-display font-extrabold text-white text-4xl lg:text-5xl mb-4">
+                        <h2 className="font-display font-extrabold text-white text-3xl sm:text-4xl lg:text-5xl mb-4">
                             Let's Build Something Great
                         </h2>
-                        <p className="text-blue-100 text-lg mb-10 max-w-xl mx-auto">
+                        <p className="text-blue-100 text-base sm:text-lg mb-8 sm:mb-10 max-w-xl mx-auto">
                             Tell us about your project and we'll get back to you within 24 hours.
                         </p>
-                        <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8">
                             <a
                                 href="tel:+917842204203"
-                                className="inline-flex items-center gap-2 bg-white/15 border border-white/20 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-white/25 transition-all"
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/15 border border-white/20 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-white/25 transition-all"
                             >
                                 <Phone size={15} /> +91 78422 04203
                             </a>
                             <a
                                 href="mailto:support@msinnovatics.com"
-                                className="inline-flex items-center gap-2 bg-white/15 border border-white/20 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-white/25 transition-all"
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/15 border border-white/20 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-white/25 transition-all"
                             >
                                 <Mail size={15} /> support@msinnovatics.com
                             </a>
                         </div>
                         <Link
                             to="/contact"
-                            className="inline-flex items-center gap-2 bg-white text-brand font-bold text-base px-9 py-4 rounded-xl hover:bg-blue-50 transition-all active:scale-95 shadow-lg shadow-black/15"
+                            className="inline-flex items-center gap-2 bg-white text-brand font-bold text-sm sm:text-base px-7 sm:px-9 py-3.5 sm:py-4 rounded-xl hover:bg-blue-50 transition-all active:scale-95 shadow-lg shadow-black/15"
                         >
                             Start a Conversation <ArrowRight size={18} />
                         </Link>

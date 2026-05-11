@@ -60,12 +60,12 @@ export default function Contact() {
     };
 
     return (
-        <div className="max-w-5xl mx-auto px-2 py-12 space-y-14">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12 space-y-14">
 
             {/* Header */}
             <div className="text-center max-w-2xl mx-auto">
                 <p className="text-brand text-xs font-semibold uppercase tracking-widest mb-3">Contact</p>
-                <h1 className="font-display font-extrabold text-ink text-5xl lg:text-6xl leading-tight mb-5">
+                <h1 className="font-display font-extrabold text-ink text-4xl sm:text-5xl lg:text-6xl leading-tight mb-5">
                     Let's Talk
                 </h1>
                 <p className="text-gray-500 text-lg leading-relaxed">

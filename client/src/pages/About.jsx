@@ -35,12 +35,12 @@ const VALUES = [
 
 export default function About() {
     return (
-        <div className="max-w-5xl mx-auto px-2 py-12 space-y-20">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12 space-y-20">
 
             {/* Header */}
             <div className="text-center max-w-2xl mx-auto">
                 <p className="text-brand text-xs font-semibold uppercase tracking-widest mb-3">About Us</p>
-                <h1 className="font-display font-extrabold text-ink text-5xl lg:text-6xl leading-tight mb-5">
+                <h1 className="font-display font-extrabold text-ink text-4xl sm:text-5xl lg:text-6xl leading-tight mb-5">
                     Who We Are
                 </h1>
                 <p className="text-gray-500 text-lg leading-relaxed">
@@ -49,7 +49,7 @@ export default function About() {
             </div>
 
             {/* Story */}
-            <div className="relative bg-ink rounded-3xl overflow-hidden px-10 py-14">
+            <div className="relative bg-ink rounded-3xl overflow-hidden px-6 sm:px-10 py-10 sm:py-14">
                 <div
                     className="absolute inset-0"
                     style={{
@@ -60,7 +60,7 @@ export default function About() {
                 <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600 opacity-10 blur-[80px] rounded-full pointer-events-none" />
                 <div className="relative z-10 max-w-2xl">
                     <p className="text-blue-400 text-xs font-semibold uppercase tracking-widest mb-4">Our Story</p>
-                    <h2 className="font-display font-bold text-white text-3xl lg:text-4xl mb-7 leading-snug">
+                    <h2 className="font-display font-bold text-white text-2xl sm:text-3xl lg:text-4xl mb-6 sm:mb-7 leading-snug">
                         Started With Purpose.<br />Growing With Precision.
                     </h2>
                     <div className="space-y-4 text-gray-400 text-base leading-relaxed">
@@ -81,7 +81,7 @@ export default function About() {
             <div>
                 <div className="mb-10">
                     <p className="text-brand text-xs font-semibold uppercase tracking-widest mb-3">Our Principles</p>
-                    <h2 className="font-display font-bold text-ink text-4xl leading-tight">What Drives Us</h2>
+                    <h2 className="font-display font-bold text-ink text-3xl sm:text-4xl leading-tight">What Drives Us</h2>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -106,13 +106,13 @@ export default function About() {
             </div>
 
             {/* Team */}
-            <div className="bg-gradient-to-br from-brand to-brand-dark rounded-3xl p-12 text-white text-center relative overflow-hidden">
+            <div className="bg-gradient-to-br from-brand to-brand-dark rounded-3xl p-8 sm:p-12 text-white text-center relative overflow-hidden">
                 <div
                     className="absolute inset-0 opacity-20"
                     style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }}
                 />
                 <div className="relative z-10">
-                    <h2 className="font-display font-bold text-3xl lg:text-4xl mb-4">The Team Behind the Work</h2>
+                    <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl mb-4">The Team Behind the Work</h2>
                     <p className="text-blue-100 text-base max-w-xl mx-auto leading-relaxed mb-8">
                         We are a small but passionate team of developers, designers, and technology consultants. We take pride in owning every project and holding ourselves to a high standard of quality and transparency.
                     </p>

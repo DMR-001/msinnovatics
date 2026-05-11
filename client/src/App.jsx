@@ -18,7 +18,7 @@ function App() {
             <Router>
                 <div className="min-h-screen bg-[#FAFAFA] text-gray-900 flex flex-col">
                     <Navbar />
-                    <main className="max-w-7xl mx-auto w-full px-4 lg:px-8 py-8 flex-grow">
+                    <main className="w-full flex-grow overflow-x-hidden">
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/about" element={<About />} />
