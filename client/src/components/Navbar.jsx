@@ -1,105 +1,87 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
-import { ShoppingCart, LogOut, Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+
+const navLinks = [
+    { label: 'Home', to: '/' },
+    { label: 'About', to: '/about' },
+    { label: 'Services', to: '/#services' },
+    { label: 'Clients', to: '/#clients' },
+    { label: 'Contact', to: '/contact' },
+];
 
 const Navbar = () => {
-    const { user, logout } = useAuth();
-    const { cart } = useCart();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
+
+    const isActive = (path) => location.pathname === path;
 
     return (
-        <nav className="bg-white shadow-md sticky top-0 z-50">
+        <nav className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
             <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+
+                {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                     <img
                         src="/logo.png"
-                        alt="MS Innovatics Logo"
+                        alt="MS Innovatics"
                         className="h-16 w-auto"
                     />
                 </Link>
 
-                {/* Desktop Menu */}
-                <div className="hidden md:flex items-center space-x-6">
-                    <Link to="/" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Home</Link>
-
-                    <Link to="/cart" className="relative text-gray-600 hover:text-blue-600 transition-colors">
-                        <ShoppingCart size={24} />
-                        {cart.length > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {cart.length}
-                            </span>
-                        )}
-                    </Link>
-
-                    {user ? (
-                        <div className="flex items-center space-x-4">
-                            {user.role === 'admin' && (
-                                <Link to="/admin" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Admin</Link>
-                            )}
-                            <Link to="/orders" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Orders</Link>
-                            <Link to="/installments" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Installments</Link>
-                            <span className="text-gray-800 font-medium">Hello, {user.name}</span>
-                            <button onClick={logout} className="text-gray-500 hover:text-red-500 transition-colors" title="Logout">
-                                <LogOut size={20} />
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="flex items-center space-x-4">
-                            <Link to="/login" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Login</Link>
-                            <Link to="/register" className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30">
-                                Register
-                            </Link>
-                        </div>
-                    )}
+                {/* Desktop Links */}
+                <div className="hidden md:flex items-center space-x-8">
+                    {navLinks.map((link) => (
+                        <a
+                            key={link.label}
+                            href={link.to}
+                            className={`font-medium transition-colors text-sm ${
+                                isActive(link.to)
+                                    ? 'text-blue-600'
+                                    : 'text-gray-600 hover:text-blue-600'
+                            }`}
+                        >
+                            {link.label}
+                        </a>
+                    ))}
+                    <a
+                        href="/contact"
+                        className="bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20"
+                    >
+                        Get a Quote
+                    </a>
                 </div>
 
-                {/* Mobile Menu Button */}
-                <div className="md:hidden flex items-center gap-4">
-                    <Link to="/cart" className="relative text-gray-600 hover:text-blue-600 transition-colors">
-                        <ShoppingCart size={24} />
-                        {cart.length > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {cart.length}
-                            </span>
-                        )}
-                    </Link>
-                    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-600">
-                        {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                    </button>
-                </div>
+                {/* Mobile Toggle */}
+                <button
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="md:hidden text-gray-600 focus:outline-none"
+                >
+                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </button>
             </div>
 
-            {/* Mobile Menu Dropdown */}
+            {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="md:hidden bg-white border-t border-gray-100 py-4 px-4 shadow-lg absolute w-full left-0">
+                <div className="md:hidden bg-white border-t border-gray-100 py-4 px-6 shadow-lg absolute w-full left-0">
                     <div className="flex flex-col space-y-4">
-                        <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">Home</Link>
-
-                        {user ? (
-                            <>
-                                <div className="py-2 border-b border-gray-100 mb-2">
-                                    <span className="text-gray-800 font-bold">Hi, {user.name}</span>
-                                </div>
-                                {user.role === 'admin' && (
-                                    <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">Admin Dashboard</Link>
-                                )}
-                                <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">My Orders</Link>
-                                <Link to="/installments" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">My Installments</Link>
-                                <button
-                                    onClick={() => { logout(); setIsMenuOpen(false); }}
-                                    className="text-left text-red-500 hover:text-red-700 font-medium py-2 flex items-center gap-2"
-                                >
-                                    <LogOut size={18} /> Logout
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-gray-600 hover:text-blue-600 font-medium py-2">Login</Link>
-                                <Link to="/register" onClick={() => setIsMenuOpen(false)} className="text-blue-600 font-bold py-2">Register Now</Link>
-                            </>
-                        )}
+                        {navLinks.map((link) => (
+                            <a
+                                key={link.label}
+                                href={link.to}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="text-gray-700 hover:text-blue-600 font-medium py-1"
+                            >
+                                {link.label}
+                            </a>
+                        ))}
+                        <a
+                            href="/contact"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="bg-blue-600 text-white px-5 py-3 rounded-full font-bold text-center hover:bg-blue-700 transition-all"
+                        >
+                            Get a Quote
+                        </a>
                     </div>
                 </div>
             )}
