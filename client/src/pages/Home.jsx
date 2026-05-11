@@ -160,18 +160,13 @@ const Home = () => {
                 </div>
                 <div className="flex justify-center">
                     <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-10 flex flex-col items-center gap-6 w-full max-w-xs hover:shadow-lg transition-all">
-                        {/*
-                            =====================================================
-                            SPROUT SCHOOL LOGO — REPLACE THE PLACEHOLDER BELOW
-                            Place the logo file in: client/public/clients/sprout-school.png
-                            Then replace the div below with:
+                        {
                             <img
                                 src="/clients/sprout-school.png"
                                 alt="Sprout School"
                                 className="h-24 w-auto object-contain"
                             />
-                            =====================================================
-                        */}
+                        }
                         <div className="h-24 w-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 text-sm font-medium">
                             Sprout School Logo
                         </div>
