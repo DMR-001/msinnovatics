@@ -216,8 +216,8 @@ export default function CertificateView() {
                         as <strong>{cert.performance}</strong> during this period.
                     </div>
 
-                    {/* Spacer — pushes signature row to bottom */}
-                    <div style={{ flex: 1 }} />
+                    {/* Fixed gap between body and signature */}
+                    <div style={{ height: '8mm', flexShrink: 0 }} />
 
                     {/* ── SIGNATURE ROW ── */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexShrink: 0, marginBottom: '3mm' }}>
@@ -252,9 +252,20 @@ export default function CertificateView() {
                             </div>
                         </div>
 
-                        {/* Right spacer to balance signature block */}
-                        <div style={{ minWidth: 160 }} />
+                        {/* MSME stamp + UDYAM — right side */}
+                        <div style={{ textAlign: 'center', minWidth: 160 }}>
+                            <img
+                                src="/msme-stamp.png"
+                                alt="MSME Registered"
+                                style={{ height: 72, width: 'auto', display: 'block', margin: '0 auto 4px' }}
+                                onError={e => { e.target.style.opacity = 0; }}
+                            />
+                            <div style={{ fontSize: 9, fontWeight: 700, color: '#1d4ed8', letterSpacing: 0.5 }}>{COMPANY.udyam}</div>
+                        </div>
                     </div>
+
+                    {/* Flex spacer — pushes footer to bottom */}
+                    <div style={{ flex: 1 }} />
 
                     {/* ── FOOTER ── */}
                     <div style={{
