@@ -3,25 +3,6 @@ const router = express.Router();
 const db = require('../db');
 const { verifyAdmin } = require('../middleware/authMiddleware');
 
-// Auto-create certificates table on first load
-const initTable = async () => {
-    await db.query(`
-        CREATE TABLE IF NOT EXISTS internship_certificates (
-            id SERIAL PRIMARY KEY,
-            certificate_id VARCHAR(50) UNIQUE NOT NULL,
-            intern_name VARCHAR(200) NOT NULL,
-            domain VARCHAR(200) NOT NULL,
-            start_date DATE NOT NULL,
-            end_date DATE NOT NULL,
-            duration VARCHAR(100) NOT NULL,
-            performance VARCHAR(100) DEFAULT 'Good',
-            issued_date DATE NOT NULL DEFAULT CURRENT_DATE,
-            created_at TIMESTAMP DEFAULT NOW()
-        );
-    `);
-};
-initTable().catch(console.error);
-
 // Generate unique certificate ID: MSI-YYYY-XXXXXX
 const generateCertId = () => {
     const year = new Date().getFullYear();
