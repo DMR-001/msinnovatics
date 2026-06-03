@@ -11,6 +11,7 @@ import TermsConditions from './pages/TermsConditions';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import CertificateView from './pages/CertificateView';
 
 function App() {
     return (
@@ -25,6 +26,9 @@ function App() {
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                             <Route path="/terms-conditions" element={<TermsConditions />} />
+                            {/* Public certificate viewer */}
+                            <Route path="/certificate/:certId" element={<CertificateView />} />
+                            <Route path="/verify/:certId" element={<CertificateView />} />
                             {/* Admin-only login kept for internal use */}
                             <Route path="/login" element={<Login />} />
                             <Route path="/admin" element={

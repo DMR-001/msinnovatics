@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { Plus, Trash2, Edit, Package, ShoppingBag, CreditCard, FileText, XCircle } from 'lucide-react';
+import { Plus, Trash2, Edit, Package, ShoppingBag, CreditCard, FileText, XCircle, Award } from 'lucide-react';
 import InstallmentRequestsAdmin from './InstallmentRequestsAdmin';
 import InstallmentsOverviewAdmin from './InstallmentsOverviewAdmin';
+import CertificatesAdmin from './CertificatesAdmin';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('products');
@@ -97,6 +98,12 @@ const AdminDashboard = () => {
                 >
                     <CreditCard size={20} /> All Installments
                 </button>
+                <button
+                    onClick={() => setActiveTab('certificates')}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${activeTab === 'certificates' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                >
+                    <Award size={20} /> Certificates
+                </button>
             </div>
 
             {activeTab === 'products' && (
@@ -168,6 +175,7 @@ const AdminDashboard = () => {
 
             {activeTab === 'installment-requests' && <InstallmentRequestsAdmin />}
             {activeTab === 'installments' && <InstallmentsOverviewAdmin />}
+            {activeTab === 'certificates' && <CertificatesAdmin />}
 
             {/* Add Product Modal */}
             {showAddModal && (

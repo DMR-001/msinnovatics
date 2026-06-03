@@ -49,6 +49,7 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const installmentRoutes = require('./routes/installmentRoutes');
+const certificateRoutes = require('./routes/certificateRoutes');
 
 
 // Test DB Connection
@@ -69,6 +70,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payment', paymentRoutes); // Razorpay payment routes
 app.use('/api/installments', installmentRoutes); // Installment payment routes
+app.use('/api/certificates', certificateRoutes); // Internship certificate routes
 
 if (require.main === module) {
     app.listen(port, () => {
