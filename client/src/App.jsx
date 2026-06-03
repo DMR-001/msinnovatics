@@ -17,29 +17,34 @@ function App() {
     return (
         <AuthProvider>
             <Router>
-                <div className="min-h-screen bg-[#FAFAFA] text-gray-900 flex flex-col">
-                    <Navbar />
-                    <main className="w-full flex-grow overflow-x-hidden">
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/about" element={<About />} />
-                            <Route path="/contact" element={<Contact />} />
-                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                            <Route path="/terms-conditions" element={<TermsConditions />} />
-                            {/* Public certificate viewer */}
-                            <Route path="/certificate/:certId" element={<CertificateView />} />
-                            <Route path="/verify/:certId" element={<CertificateView />} />
-                            {/* Admin-only login kept for internal use */}
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/admin" element={
-                                <ProtectedRoute adminOnly>
-                                    <AdminDashboard />
-                                </ProtectedRoute>
-                            } />
-                        </Routes>
-                    </main>
-                    <Footer />
-                </div>
+                <Routes>
+                    {/* Standalone certificate pages — no Navbar/Footer */}
+                    <Route path="/certificate/:certId" element={<CertificateView />} />
+                    <Route path="/verify/:certId" element={<CertificateView />} />
+
+                    {/* All other pages with Navbar + Footer */}
+                    <Route path="*" element={
+                        <div className="min-h-screen bg-[#FAFAFA] text-gray-900 flex flex-col">
+                            <Navbar />
+                            <main className="w-full flex-grow overflow-x-hidden">
+                                <Routes>
+                                    <Route path="/" element={<Home />} />
+                                    <Route path="/about" element={<About />} />
+                                    <Route path="/contact" element={<Contact />} />
+                                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                                    <Route path="/terms-conditions" element={<TermsConditions />} />
+                                    <Route path="/login" element={<Login />} />
+                                    <Route path="/admin" element={
+                                        <ProtectedRoute adminOnly>
+                                            <AdminDashboard />
+                                        </ProtectedRoute>
+                                    } />
+                                </Routes>
+                            </main>
+                            <Footer />
+                        </div>
+                    } />
+                </Routes>
             </Router>
         </AuthProvider>
     );
