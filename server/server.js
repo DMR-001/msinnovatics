@@ -20,24 +20,25 @@ app.enable('trust proxy');
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps, Postman, or same-origin)
-        if (!origin) {
-            return callback(null, true);
-        }
-
-        // Check if the origin is in the allowed list
+        if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1) {
-            return callback(null, true); // Allow the origin
-        } else {
-            console.log('CORS blocked origin:', origin);
-            return callback(new Error('Not allowed by CORS'));
+            return callback(null, origin); // echo exact origin so header is never wrong
         }
+        console.log('CORS blocked origin:', origin);
+        return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Length', 'X-Request-Id']
+    exposedHeaders: ['Content-Length', 'X-Request-Id'],
 }));
+
+// Ensure every response carries Vary: Origin so proxies/CDNs never serve
+// a cached CORS header from one origin to a different origin
+app.use((req, res, next) => {
+    res.vary('Origin');
+    next();
+});
 
 app.enable('trust proxy'); // Important for Vercel/proxies
 app.use(express.json());
