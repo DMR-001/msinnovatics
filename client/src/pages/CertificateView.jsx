@@ -237,6 +237,8 @@ export default function CertificateView() {
                         </div>
                     </div>
 
+                    <div style={{ flex: 1 }} />
+
                     {/* ── FOOTER ── */}
                     <div style={{
                         flexShrink: 0,
