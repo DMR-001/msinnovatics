@@ -126,34 +126,9 @@ export default function CertificateView() {
                         MS INNOVATICS
                     </div>
 
-                    {/* ── HEADER ── */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5mm', flexShrink: 0 }}>
+                    {/* ── HEADER ── logo only */}
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5mm', flexShrink: 0 }}>
                         <img src="/logo.png" alt="MS Innovatics" style={{ height: 48, width: 'auto' }} />
-
-                        {/* MSME Stamp — place msme-stamp.png in client/public/ */}
-                        <div style={{ position: 'relative' }}>
-                            <img
-                                src="/msme-stamp.png"
-                                alt="MSME Registered Stamp"
-                                style={{ height: 75, width: 'auto', display: 'block' }}
-                                onError={e => {
-                                    e.target.style.display = 'none';
-                                    e.target.nextSibling.style.display = 'flex';
-                                }}
-                            />
-                            {/* Fallback placeholder — shown only if msme-stamp.png is missing */}
-                            <div style={{
-                                display: 'none',
-                                width: 75, height: 75, border: '2px dashed #93c5fd',
-                                borderRadius: 4, alignItems: 'center', justifyContent: 'center',
-                                flexDirection: 'column', textAlign: 'center',
-                                background: '#eff6ff',
-                            }}>
-                                <div style={{ fontSize: 8, color: '#3b82f6', fontWeight: 700, lineHeight: 1.4 }}>
-                                    Add<br />msme-stamp.png<br />to /public
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     {/* ── TITLE + ISSUE DATE ── */}
@@ -216,11 +191,8 @@ export default function CertificateView() {
                         as <strong>{cert.performance}</strong> during this period.
                     </div>
 
-                    {/* Fixed gap between body and signature */}
-                    <div style={{ height: '8mm', flexShrink: 0 }} />
-
-                    {/* ── SIGNATURE ROW ── */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexShrink: 0, marginBottom: '3mm' }}>
+                    {/* ── SIGNATURE ROW ── pushed to bottom via marginTop auto */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexShrink: 0, marginTop: 'auto', marginBottom: '3mm' }}>
 
                         {/* Signature block */}
                         <div style={{ textAlign: 'center', minWidth: 160 }}>
@@ -228,6 +200,7 @@ export default function CertificateView() {
                                 src="/signature.png"
                                 alt="Signature"
                                 style={{ height: 52, width: 'auto', display: 'block', margin: '0 auto 4px' }}
+                                onError={e => { e.target.style.display = 'none'; }}
                             />
                             <div style={{ width: '100%', height: 1, background: '#d1d5db', marginBottom: 5 }} />
                             <div style={{ fontSize: 11, fontWeight: 700, color: '#111827' }}>{COMPANY.signatory}</div>
@@ -263,9 +236,6 @@ export default function CertificateView() {
                             <div style={{ fontSize: 9, fontWeight: 700, color: '#1d4ed8', letterSpacing: 0.5 }}>{COMPANY.udyam}</div>
                         </div>
                     </div>
-
-                    {/* Flex spacer — pushes footer to bottom */}
-                    <div style={{ flex: 1 }} />
 
                     {/* ── FOOTER ── */}
                     <div style={{
