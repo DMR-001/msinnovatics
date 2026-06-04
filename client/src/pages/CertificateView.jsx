@@ -236,9 +236,6 @@ export default function CertificateView() {
                         </div>
                     </div>
 
-                    {/* Print-only spacer — invisible on screen, flex:1 when printing to pin footer to bottom */}
-                    <div className="print-spacer" />
-
                     {/* ── FOOTER ── */}
                     <div style={{
                         flexShrink: 0,
@@ -255,25 +252,23 @@ export default function CertificateView() {
             </div>
 
             <style>{`
-                .print-spacer { display: none; }
                 @media print {
                     .no-print { display: none !important; }
                     .no-print-bg {
                         background: none !important;
                         padding: 0 !important;
                         min-height: unset !important;
-                        display: block !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: flex-start !important;
                     }
                     body, html { margin: 0; padding: 0; }
                     #certificate {
                         box-shadow: none !important;
-                        width: 297mm !important;
-                        height: 210mm !important;
-                        margin: 0 !important;
-                        display: flex !important;
-                        flex-direction: column !important;
+                        width: 277mm !important;
+                        height: auto !important;
+                        margin: 10mm auto !important;
                     }
-                    .print-spacer { display: block; flex: 1; }
                     @page { size: A4 landscape; margin: 0; }
                 }
             `}</style>
