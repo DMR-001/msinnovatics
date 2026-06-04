@@ -9,7 +9,7 @@ const COMPANY = {
     signatory: 'Dorankula Mukteshwara Reddy',
     designation: 'Co-Founder',
     website: 'www.msinnovatics.com',
-    email: 'contact@msinnovatics.com',
+    email: 'support@msinnovatics.com',
 };
 
 const formatDate = (dateStr) => {
