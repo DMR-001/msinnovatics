@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 
 
 const app = express();
@@ -18,25 +17,19 @@ const allowedOrigins = [
 
 app.enable('trust proxy');
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            return callback(null, origin); // echo exact origin so header is never wrong
-        }
-        console.log('CORS blocked origin:', origin);
-        return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Length', 'X-Request-Id'],
-}));
-
-// Ensure every response carries Vary: Origin so proxies/CDNs never serve
-// a cached CORS header from one origin to a different origin
+// Manual CORS — always reads Origin from the live request, never cached
 app.use((req, res, next) => {
-    res.vary('Origin');
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    res.setHeader('Vary', 'Origin');
+    // Prevent CDN/Vercel edge from caching API responses
+    res.setHeader('Cache-Control', 'no-store');
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
     next();
 });
 
