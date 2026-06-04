@@ -89,7 +89,6 @@ export default function CertificateView() {
                 {/* Certificate paper — A4 landscape, flex column so footer pins to bottom */}
                 <div id="certificate" style={{
                     width: '297mm',
-                    height: '210mm',
                     padding: '11mm 16mm 10mm',
                     fontFamily: "'DM Sans', sans-serif",
                     boxSizing: 'border-box',
@@ -236,8 +235,6 @@ export default function CertificateView() {
                             <div style={{ fontSize: 9, fontWeight: 700, color: '#1d4ed8', letterSpacing: 0.5 }}>{COMPANY.udyam}</div>
                         </div>
                     </div>
-
-                    <div style={{ flex: 1 }} />
 
                     {/* ── FOOTER ── */}
                     <div style={{
