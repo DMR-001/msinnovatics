@@ -191,8 +191,8 @@ export default function CertificateView() {
                         as <strong>{cert.performance}</strong> during this period.
                     </div>
 
-                    {/* ── SIGNATURE ROW ── pushed to bottom via marginTop auto */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexShrink: 0, marginTop: 'auto', marginBottom: '3mm' }}>
+                    {/* ── SIGNATURE ROW ── */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexShrink: 0, marginTop: '10mm', marginBottom: '6mm' }}>
 
                         {/* Signature block */}
                         <div style={{ textAlign: 'center', minWidth: 160 }}>
