@@ -7,7 +7,7 @@ const COMPANY = {
     name: 'MS Innovatics',
     udyam: 'UDYAM-TS-09-0209714',
     signatory: 'Dorankula Mukteshwara Reddy',
-    designation: 'Founder & Director',
+    designation: 'Co-Founder',
     website: 'www.msinnovatics.com',
     email: 'contact@msinnovatics.com',
 };
