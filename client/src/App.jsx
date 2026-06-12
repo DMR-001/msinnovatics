@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import CertificateView from './pages/CertificateView';
+import CertificateVerify from './pages/CertificateVerify';
 
 function App() {
     return (
@@ -20,7 +21,7 @@ function App() {
                 <Routes>
                     {/* Standalone certificate pages — no Navbar/Footer */}
                     <Route path="/certificate/:certId" element={<CertificateView />} />
-                    <Route path="/verify/:certId" element={<CertificateView />} />
+                    <Route path="/verify/:certId" element={<CertificateVerify />} />
 
                     {/* All other pages with Navbar + Footer */}
                     <Route path="*" element={
