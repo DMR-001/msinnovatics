@@ -14,9 +14,16 @@ export const AuthProvider = ({ children }) => {
         const storedUser = localStorage.getItem('user');
         if (token && storedUser && storedUser !== 'undefined') {
             try {
-                setUser(JSON.parse(storedUser));
+                // Decode JWT payload and check expiry without a library
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const isExpired = payload.exp && payload.exp * 1000 < Date.now();
+                if (isExpired) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                } else {
+                    setUser(JSON.parse(storedUser));
+                }
             } catch (e) {
-                console.error("Invalid user data in localStorage", e);
                 localStorage.removeItem('user');
                 localStorage.removeItem('token');
             }
